@@ -1,4 +1,13 @@
-﻿import express = require('express');
+﻿/*
+CaseNode main index 
+Copyright (c) 2015 Oliver Low
+app.ts (typescript - compiled to app.js)
+VERSION: 0.1.1
+Revision history:
+v0.1.1 2015-09-03 inception
+*/
+
+import express = require('express');
 import routes = require('./routes/index');
 import http = require('http');
 import path = require('path');

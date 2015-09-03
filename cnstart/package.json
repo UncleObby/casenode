@@ -4,8 +4,8 @@
   "description": "cnstart",
   "main": "app.js",
   "author": {
-    "name": "Oliver",
-    "email": ""
+    "name": "Oliver Low",
+    "email": "oliverlow@gmail.com"
   },
   "dependencies": {
     "express": "3.4.4",
