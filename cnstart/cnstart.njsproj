@@ -40,6 +40,7 @@
     <TypeScriptCompile Include="Scripts\typings\stylus\stylus.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="cnConfig.json" />
     <Content Include="public\javascripts\bootstrap.js" />
     <Content Include="public\javascripts\bootstrap.min.js" />
     <Content Include="public\javascripts\jquery-1.10.2.intellisense.js" />
@@ -66,8 +67,11 @@
     <Content Include="README.md" />
     <Content Include="views\contact.jade" />
     <Content Include="views\about.jade" />
+    <Content Include="views\docgen.jade" />
     <Content Include="views\index.jade" />
     <Content Include="views\layout.jade" />
+    <Content Include="views\user.jade" />
+    <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\" />

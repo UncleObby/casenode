@@ -34,9 +34,22 @@ if ('development' == app.get('env')) {
     app.use(express.errorHandler());
 }
 
+/**************
+* ROUTERS
+***************/
+//General routes
 app.get('/', routes.index);
 app.get('/about', routes.about);
 app.get('/contact', routes.contact);
+
+//user pages
+app.get('/user', routes.user);
+app.get('/user/*', routes.user);
+
+//document generator - generally needs some POST data to do stuff, GET is for testing
+app.get('/docgen', routes.docgen);
+app.post('/docgen', routes.docgen);
+
 
 http.createServer(app).listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
