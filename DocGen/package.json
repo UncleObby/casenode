@@ -1,0 +1,10 @@
+{
+  "name": "DocGen",
+  "version": "0.0.0",
+  "description": "DocGen",
+  "main": "app.js",
+  "author": {
+    "name": "Oliver",
+    "email": ""
+  }
+}

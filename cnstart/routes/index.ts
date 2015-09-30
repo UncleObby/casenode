@@ -30,7 +30,9 @@ e.g.
 	/user/AC1/profile - edit personal profile
 */
 export function user(req: express.Request, res: express.Response) {
-	res.render('user', { title: 'User', user: req.url.toString() });
+	var rPattern = new RegExp(".*");
+	var sUserGiven = req.url.toString().match(rPattern);
+	res.render('user', { title: 'User', user: sUserGiven });
 };
 
 /* docgen
