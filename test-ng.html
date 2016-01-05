@@ -1,0 +1,78 @@
+<!doctype html>
+<meta charset="UTF-8">
+<script type='text/javascript' src='js/angular.js'></script>
+<link rel='stylesheet' type='text/css' href='css/xeditable.css'>
+<script type='text/javascript'>
+
+//instantiate angular.js
+//with xeditable module
+
+var app = angular.module("cn", []) ;
+
+//define user service
+app.factory("current", function(){
+	return {
+		username:"OJL",
+		ID:"1"
+	};
+});//"current" service
+
+
+
+//create the enquiryForm controller
+app.controller("enquiryForm", enquiryForm); 
+function enquiryForm($scope){
+
+ $scope.contactDetails = [
+	{
+	firstName:"",
+	lastName:"",
+	phone_mobile:"",
+	notes:""
+	}
+	];
+
+	
+ $scope.save = function(){
+	var sMsg = "Saving contact: " + $scope.contactDetails["firstName"] + " " + $scope.contactDetails["lastName"];
+	sMsg += "\rUser: " + current.username;
+	console.log("saving..." + sMsg);
+		
+	}
+
+
+};//enquiryForm
+
+
+</script>
+
+
+<HTML ng-app="cn" >
+<body>
+<input ng-model="userHTML" aria-label="User Input">
+<div ng-bind-html="userHTML"></div>
+
+<input type="text" ng-model="myInput" placeholder="Enter name here">
+<h1><span ng-show="myInput">Hello </span>{{myInput}}</h1>
+
+<hr>
+Logged on as: {{cn.current.username}}
+<div ng-controller="enquiryForm as enquiry">
+	<TABLE>
+	<TR>
+	<TD>
+
+	First name: <input ng-model="enquiry.contactDetails.firstName" placeholder="Enter first name"><br>
+	Last name: <input ng-model="enquiry.contactDetails.lastName" placeholder="Enter last name"></br>
+
+	</TD>
+	<TD>
+	Name: {{enquiry.contactDetails.firstName}} {{enquiry.contactDetails.lastName}}</span>
+	</TD>
+	</TR>
+	</TABLE>
+
+	<div ng-bind-html="enquiry.notes" placeholder="Notes...">sadsad</div>
+	<button ng-click="console.log('enquiry.save()');">SAVE</button>
+</div>
+<button onclick="console.log('test button clicked');">test</button>
