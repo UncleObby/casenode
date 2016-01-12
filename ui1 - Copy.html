@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang='en' ng-app='uiApp'>
+<HEAD>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel='stylesheet' type='text/css' href='css/bootstrap.css'>
+	<link rel='stylesheet' type='text/css' href='css/ui1.css'>
+	<link rel='stylesheet' type='text/css' href="css/jquery-ui.css">
+	<script type='text/javascript' src='js/jquery.js'></script>
+	<script type='text/javascript' src="js/jquery-ui.js"></script>
+	<script type='text/javascript' src='js/angular.js'></script>
+	<script type='text/javascript' src='js/angular-sanitize.js'></script>
+	<script type='text/javascript' src="js/fuse.js"></script>
+	<script type='text/javascript' src='js/ui1.js'></script>
+</HEAD>
+
+
+
+<!-- layout -->
+
+<body >
+<div class="container"> <!-- outer bootstrap CSS container div-->
+	<!--top nav and status bar -->
+
+	<div class="row">	
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					</button>
+				<a class="navbar-brand" href="#">Mason Bullock</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#"><span class="glyphicon glyphicon-home" title="Your home page"><span class="sr-only">(current)</span></a></li>
+					<li><a href="#"><span class="glyphicon glyphicon-time" title="Record time"></span></a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-edit"></span> Edit<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-submenu"><a tabindex="-1" href="#">New...</a>
+								<ul class="dropdown-menu">
+									<li class="menuitem">&nbsp;Client</li>
+								</ul>
+							</li>
+							<li role="separator" class="divider"></li>
+							<li><a href="#">Client</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-list-alt"></span> Reports<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Profit costs</a></li>
+							<li><a href="#">Current cases summary</a></li>
+							<li><a href="#">SRA work report</a></li>
+						</ul>
+					</li>
+				</ul>
+				<form class="navbar-form navbar-left" role="search">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Search">
+					</div>
+					<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search</button>
+				</form>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+							<span class="glyphicon glyphicon-user"></span> USER
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#"><span class="glyphicon glyphicon-user"></span> Log in</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-user"></span> Log out</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-cog"></span> Preferences</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>		
+	</div>
+	<!-- main page section for interacting with cases -->	
+	<div ng-controller="caseList as caseList" class="row">
+		<input ng-model="myO.name"><button ng-click="savemyO()">SAVE</BUTTON>
+		<!-- my cases status column -->
+		<div class="col-sm-2">
+			<!--nav tabs - cases, enquiries -->
+			<ul class="nav nav-tabs">
+				<li ng-click="caseList.setTab('Cases','left')" ng-class="{active: caseList.activeTab['left'] == 'Cases'}"><a href="">Cases</a></li>
+				<li ng-click="caseList.setTab('Enquiries','left')" ng-class="{active: caseList.activeTab['left'] == 'Enquiries'}"><a href="">Enquiries</a></li>
+			</ul>
+			<!-- cases list-->
+			<div ng-show="caseList.activeTab['left'] == 'Cases'">
+				<div class="panel-group">
+					<div ng-repeat="case in caseList.list | filter:{type:'client'}" >
+						<div ng-click="caseList.choose(case)" class="case-list-item panel panel-default" ng-class="{'active': caseList.currCaseN == $index}" ng-style="{'background-color' : case.caseStatusColor}" >
+							<span title="{{case.name}}"> {{case.name}}<br /></span>
+							<span title="{{case.matterDesc}}"> {{case.matterDesc}}<br /></span>
+							<span title="{{case.caseExpecting}}"> {{case.caseExpecting}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-show="caseList.activeTab['left'] == 'Enquiries'">
+				<div class="panel-group">
+					<div ng-repeat="case in caseList.list | filter:{type:'enquiry'}" >
+						<div ng-click="caseList.choose(case)" class="case-list-item panel panel-default" ng-class="{'active': caseList.currCaseN == $index}" ng-style="{'background-color' : case.caseStatusColor}" >
+							<span title="{{case.name}}"> {{case.name}}<br /></span>
+							<span title="{{case.category}}"> {{case.category}}<br /></span>
+							<span title="{{case.dateOfEnq}}"> {{case.dateOfEnq}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- case history column -->
+		<div id="divCurrentCase" class="col-sm-3">
+			<!--nav tabs - Diary, File, Contact, Info -->
+			<ul class="nav nav-tabs">
+				<li ng-click="caseList.setTab('Diary','middle')" ng-class="{active: caseList.activeTab['middle'] == 'Diary'}"><a href="">Diary</a></li>
+				<li ng-click="caseList.setTab('File','middle')" ng-class="{active: caseList.activeTab['middle'] == 'File'}"><a href="">File</a></li>
+				<li ng-click="caseList.setTab('Contact','middle')" ng-class="{active: caseList.activeTab['middle'] == 'Contact'}" class="dropdown"><a href='#'>Contact</a></li>
+				<li ng-click="caseList.setTab('Info','middle')" ng-class="{active: caseList.activeTab['middle'] == 'Info'}" class="dropdown"><a href='#'>Info</a></li>
+			</ul>
+			<!--Diary tab - shows events, jobs to do, done, etc. -->
+			<div ng-show="caseList.activeTab['middle'] == 'Diary'" class="panel-group">
+			Diary
+			</div>
+			<!-- case file tab - shows docs etc on the file-->
+			<div ng-show="caseList.activeTab['middle'] == 'File'" class="panel-group">
+			<span>Current {{caseList.current.type}} file</span>
+				<div class="case-list-item panel panel-default" ng-style="{'background-color' : caseList.current.caseStatusColor}">
+					<span title="{{caseList.current.name}}">{{caseList.current.name}}</span><br />
+					<span title="{{caseList.current.matterDesc}}">{{caseList.current.matterDesc}}</span><br />
+					<span title="{{caseList.current.caseExpecting}}">{{caseList.current.caseExpecting}}</span>
+				</div>
+				<div ng-repeat="doc in caseList.current.documents"> 
+					<div class="panel panel-default doc-list-item" ng-class-even="'even-row'" ng-class-odd="'odd-row'"
+						ng-click="caseList.docPreview(doc)" >
+						{{doc.date}} <span title="{{doc.title}}">{{doc.title}}</span>
+					</div>
+				</div>
+			</div>
+			<!-- case contacts tab -->
+			<div ng-show="caseList.activeTab['middle'] == 'Contact'" class="panel-group">
+				<span>Contact details</span>
+				<div ng-repeat="contact in caseList.current.contacts">
+					<div class="panel panel-default">
+						<span ng-show="contact.party"><strong>{{contact.party}}</strong><br /></span>
+						<span ng-show="contact.name">{{contact.name}}<span ng-show="contact.position"> ({{contact.position}})</span><br /></span>
+						<span ng-show="contact.mobile">Mobile: <a href='#'>{{contact.mobile}}</a><br /></span>
+						<span ng-show="contact.landline">Landline: <a href='#'>{{contact.landline}}</a><br /></span>
+						<span ng-show="contact.email">EMail: <a href='#'>{{contact.email}}</a><br /></span>
+						<span ng-show="contact.addressHTML">
+							<table><tr><td valign=top>Addr: </td><td><div ng-bind-html="contact.addressHTML"></div></td></tr></table>
+						</span>
+						<span ng-show="contact.addrDX">DX: {{contact.addrDX}}</a><br /></span>
+					</div>
+				</div>
+			</div>
+			<!-- case info tab -->
+			<div ng-show="caseList.activeTab['middle'] == 'Info'" class="panel-group">
+				<span>Case Information</span>
+				<div class=" panel panel-default">
+					<div ng-repeat="info in caseList.current.info" ng-class-even="'even-row'" ng-class-odd="'odd-row'">
+						<span>{{info.key}} : {{info.value}}</span>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<!-- new item / filter column -- click filters the list, drag creates new -->
+		<div class="btn-toolbar col-sm-1">
+			<!-- items -->
+			<div class="btn-group btn-group-vertical">
+				<u title="Click to filter list. Drag to list create new.">What?</u>
+				<div id="btnPhone" class="btn btn-default" title="Phone call"><span class="glyphicon glyphicon-earphone"></span></div>
+				<div id="btnEmail" class="btn btn-default" title="Email"><span class="glyphicon glyphicon-envelope"></span></div>
+				<div id="btnDoc" class="btn btn-default" title="Doc"><span class="glyphicon glyphicon-file"></span></div>
+				<div id="btnDate" class="btn btn-default" title="Date"><span class="glyphicon glyphicon-calendar"></span></div>
+			</div>
+			
+			<!-- persons -->
+			<div class="btn-group btn-group-vertical">
+				<u title="Click to filter list.">Tags</u>
+				<div class="btn btn-default" title="Client">C</div>
+				<div class="btn btn-default" title="Court">Ct</div>
+				<div class="btn btn-default" title="Other side">O/S</div>
+				<div class="btn btn-default" title="Counsel">Csl</div>
+			</div>
+		</div>
+		<!-- right panel - tabbed -->
+		<div class="col-sm-6">
+			<!-- tabs -->
+			
+			<ul class="nav nav-tabs">
+				<li ng-click="caseList.setTab('Note','right')" ng-class="{active: caseList.activeTab['right'] == 'Note'}"><a href="">Note</a></li>
+				<li ng-click="caseList.setTab('Templates','right')" ng-class="{active: caseList.activeTab['right'] == 'Templates'}" class="dropdown"><a href='#'>Templates</a></li>
+				<li ng-click="caseList.setTab('Doc','right')" ng-class="{active: caseList.activeTab['right'] == 'Doc'}" class="dropdown"><a href="#">Doc</a></li>
+				<li ng-click="caseList.setTab('Date','right')" ng-class="{active: caseList.activeTab['right'] == 'Date'}" class="dropdown"><a href="#">Date</a></li>
+				<li ng-click="caseList.setTab('Costs','right')" ng-class="{active: caseList.activeTab['right'] == 'Costs'}" class="dropdown"><a href="#">Costs</a></li>
+				<li ng-click="caseList.setTab('Enquiry','right')" ng-class="{active: caseList.activeTab['right'] == 'Enquiry'}" class="dropdown"><a href="#">Enquiry</a></li>
+			</ul>
+			<!-- doc preview column -->
+
+			<!-- attendance note column -->
+			<div ng-show="caseList.activeTab['right'] == 'Note'" id="divAttendanceNote" >
+				<h3>Attendance Note</h3>
+				<form>
+					<select>
+						<option selected>Client</option>
+						<option> Other side</option>
+						<option> Court </option>
+						<option> Other </option>
+					</select>
+					<span>{{caseList.current.name}}</span><br />
+					<select>
+						<optgroup label="Client numbers">
+							<option selected>Mobile</option>
+							<option>Home</option>
+							<option>Work</option>
+						</optgroup>
+					</select>
+					<a href='#' ng-click="dial()">{{caseList.current.client.mobile}}</a><br />
+					<div class="md-col-12">
+						<textarea></textarea>
+					</div>
+				<form>
+			</div><!-- end of attendance not tab-->
+			<!-- dates tab-->
+			<div ng-show="caseList.activeTab['right'] == 'Date'">
+			Date: <input type="text" id="datePicker" placeholder="Click for calendar"></input><br />
+			Description: <input size=40></input>
+			
+			</div>
+			<!--templates tab-->
+			<div ng-show="caseList.activeTab['right'] == 'Templates'">
+				<div id="divTemplates">
+					<div ng-repeat="group in caseList.templates">
+						<h3 class="panel-group">{{group.category}}</h3>
+						<div class="panel-group">
+						<p ng-repeat="template in group.templates" class="doc-template panel panel-default">
+							{{template.name}}</p>
+						</div>
+					</div>
+				</div>
+			</div><!--end of templates tab-->
+			
+			<!--enquiry form -->
+			<div ng-show="caseList.activeTab['right'] == 'Enquiry'">
+				<div id="divEnquiry">
+					<!-- Data is linked to this.enquiry which points to caseList[...] which is created if needed -->
+					<div class="row">
+						<div class="col-sm-6">
+							<h3>New Enquiry</h3>
+							<!-- show the word "saved" or a Save button is enquiry.modified is defined-->
+							<div ng-show="caseList.enquiry.modified">
+								<!--show "saved" or save button if modified-->
+								<span ng-hide="caseList.enquiry.modified">SAVED</SPAN>
+								<button ng-show="caseList.enquiry.modified">SAVE</BUTTON>
+							</div>
+						</div>
+						<!--conflit check panel-->
+						<div class="conflict-check-panel col-sm-6">
+							<span>Automatic conflict check</span>
+							<!--if no conflicts, show green-->
+							<div ng-hide="caseList.enquiry.conflicts.length" class="alert-success">No conflicts found</div>
+							<!-- if there are any, display them-->
+							<div ng-show="caseList.enquiry.conflicts.length" ng-repeat="conflict in caseList.enquiry.conflicts track by $index" class="alert-warning">
+								<a href='#'>{{conflict.name}}</a>
+							</div>
+						</div>
+					</div>
+					<div class="row panel panel-default form-horizontal col-sm-12">
+						<div class="row form-group">
+							<input ng-model="caseList.enquiry.nametitle" ng-change="caseList.autoSaveEnquiry()" type="text" placeholder="Title" size=5>
+							<input ng-model="caseList.enquiry.caseFields['name']" ng-change="caseList.conflictNameCheck(); caseList.autoSaveEnquiry()" type="text" placeholder="Name" size=21>
+						</div>
+						<div class="row form-group">
+							<input ng-model="caseList.enquiry.caseFields['contacts'][0]['mobile']" type="text" placeholder="Mobile" size=13>
+							<input ng-model="caseList.enquiry.landline" type="text" placeholder="Landline" size=13>
+							<input ng-model="caseList.enquiry.email" type="text" placeholder="Email" size=30>
+						</div>
+						<div class="row form-group">
+							<input ng-model="caseList.enquiry.address" type="text" placeholder="Address" size=50>
+							<input ng-model="caseList.enquiry.postcode" type="text" placeholder="Postcode" size=12>
+						</div>
+						<div class="row">
+							<textarea ng-model="caseList.enquiry.notes" cols=60 rows=10 placeholder="Notes"></textarea>
+						</div>
+						<div class="row">
+							<input ng-model="caseList.enquiry.matterDesc" size=60 placeholder="Matter">
+							<input ng-model="caseList.enquiry.category" size=20 placeholder="Category">
+							<div ng-controller="feeEarners"><!-- this uses the feeEarner controller-->
+								<select ng-model="selected" ng-options="opt.initials for opt in list"></select>
+								{{selected.name}}
+							</div>
+						</div>
+					</div>
+					<button ng-click="caseList.saveEnquiry()">SAVE ENQUIRY</button>
+				</div> 
+			</div><!-- end of enquiry form -->
+		</div> <!--end of right panel-->
+	</div><!-- end of columns-->
+	
+</div><!-- end of outer bootstrap container-->
+
+<div id="divBottom" class="ui-widget-content">BOTTOM</div>
+
+<script type='text/javascript' src='js/bootstrap.js'></script>
+
+</body>

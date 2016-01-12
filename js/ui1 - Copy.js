@@ -12,6 +12,9 @@ jquery.js
 jquery-ui.js
 */
 
+//developer's personal object
+var ob = {};
+
 //some color data:
 var uiColor = {green:"#E9FFEE",red:"#FFEEE9"};
 //some test data:
@@ -75,6 +78,7 @@ testData["caseFields"]=[
 		],
 		documents: [
 			{
+				doctype: '.msg',
 				title: "Email to other side re consent",
 				filepath: "",
 				date: "04/08/2015"
@@ -107,7 +111,7 @@ testData["caseFields"]=[
 			},
 			{
 				title: "Draft Defence",
-				doctype: ".doc",
+				doctype: ".pdf",
 				targetURL: "file:///C:/Users/Oliver.Low/Documents/dev/testdata/Draft Defence.pdf",
 				date: "02/08/2015"
 				
@@ -492,7 +496,9 @@ uiApp.controller("feeEarners", ['$scope', function($scope) {
 }]);
 
 //create main case list controller
-uiApp.controller("caseList", ['$scope', function($scope, $timeout){
+uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
+	//assign developer's personal object to this
+	ob=this;
 	//get some data........
 	this.list = JSON.parse(window.localStorage.getItem("caseFields")) || testData["caseFields"];
 	this.templates = JSON.parse(window.localStorage.getItem("templates")) || testData["templates"];
@@ -533,7 +539,7 @@ uiApp.controller("caseList", ['$scope', function($scope, $timeout){
 	var t =[]; //timer handle
 	this.autoSaveEnquiry = function(){
 		console.log("setTimeout " + this.enquiry.timestamp.toString());
-		clearTimeout(t["autoSaveEnquiry"]); // we don't want to set multiple timeouts, if there was no t
+		clearTimeout(t["autoSaveEnquiry"]); // we don't want to set multiple timeouts
 		t["autoSaveEnquiry"] = setTimeout( function(that){ //will pass current this (caseList instance) as 'that' as setTimeout executes in window context
 			console.log("timeout");
 			//if the enquiry does not have a time stamp then it's new, and needs to be created
@@ -549,7 +555,7 @@ uiApp.controller("caseList", ['$scope', function($scope, $timeout){
 	}
 	//save enquiry
 	this.saveEnquiry = function(){
-		//see if the enquiry is already saved
+		//see if the enquiry is already saved. If it is, do nothing as the angular bindings will update it. 
 		//if the caseFields is undefined or has no 'type', then this is new, so create a new case variable for it
 		if ( ! this.enquiry.caseFields["type"] ) {
 			var d =new Date(); 
@@ -557,9 +563,10 @@ uiApp.controller("caseList", ['$scope', function($scope, $timeout){
 			//push the enquiry onto the casefield
 			this.list.push(this.enquiry.caseFields);
 			//set-up some default data - this is how we link the new enquiry form to the case data
+			//angular will create objects as required by the UI, but we can't assume any in particular exist
 			this.enquiry.caseFields["type"] = "enquiry";
 			this.enquiry.caseFields["contacts"] = [{party:"Client"}];
-			
+			this.enquiry.caseFields["documents"] = [{title:"Note of enquiry", doctype:".txt", date:new Date().toLocaleDateString(), content:""}]
 			$scope.$apply(); //required to trigger angular digest because this function will be called by window.setTimeout
 			//this.enquiry.caseFields = this.list[this.list.push({type: "enquiry", timestamp: d.getTime()})];
 			console.log("created caseFields for client " + this.enquiry.caseFields['name']);
@@ -580,10 +587,21 @@ uiApp.controller("caseList", ['$scope', function($scope, $timeout){
 	//save data function
 	$scope.savemyO = function(){
 		//serialise and write to locaStorage
-		window.localStorage.setItem("myO", JSON.stringify($scope.myO));
+		//window.localStorage.setItem("myO", JSON.stringify($scope.myO));
+		//send it to the database router 
+		var request={
+			method: "POST",
+			url: "http://localhost:8080/db",
+			data: $scope.myO
+		}
+		$http(request).then( function(){
+				//success callback
+				
+			}, function(){
+				//error callback
+				console.log("broken")
+			});
 		console.log("saved myO");
-		//window.localStorage.setItem("caseFields", JSON.stringify(testData["caseFields"]));
-		//console.log(window.localStorage.getItem("testData"));
 		
 	}
 	

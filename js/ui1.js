@@ -496,7 +496,7 @@ uiApp.controller("feeEarners", ['$scope', function($scope) {
 }]);
 
 //create main case list controller
-uiApp.controller("caseList", ['$scope', function($scope, $timeout){
+uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	//assign developer's personal object to this
 	ob=this;
 	//get some data........
@@ -555,7 +555,7 @@ uiApp.controller("caseList", ['$scope', function($scope, $timeout){
 	}
 	//save enquiry
 	this.saveEnquiry = function(){
-		//see if the enquiry is already saved
+		//see if the enquiry is already saved. If it is, do nothing as the angular bindings will update it. 
 		//if the caseFields is undefined or has no 'type', then this is new, so create a new case variable for it
 		if ( ! this.enquiry.caseFields["type"] ) {
 			var d =new Date(); 
@@ -587,10 +587,21 @@ uiApp.controller("caseList", ['$scope', function($scope, $timeout){
 	//save data function
 	$scope.savemyO = function(){
 		//serialise and write to locaStorage
-		window.localStorage.setItem("myO", JSON.stringify($scope.myO));
+		//window.localStorage.setItem("myO", JSON.stringify($scope.myO));
+		//send it to the database router 
+		var request={
+			method: "POST",
+			url: "http://localhost:8080/db",
+			data: $scope.myO
+		}
+		$http(request).then( function(response){
+				//success callback
+				console.log("DB request OK: " + response.data );
+			}, function(){
+				//error callback
+				console.log("broken");
+			});
 		console.log("saved myO");
-		//window.localStorage.setItem("caseFields", JSON.stringify(testData["caseFields"]));
-		//console.log(window.localStorage.getItem("testData"));
 		
 	}
 	
