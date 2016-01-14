@@ -9,6 +9,7 @@ v 0.1 - 12 Jan 2016 incept
 var express=require("express"); //Express app base
 var bodyParser=require("body-parser"); //middleware for parsing POST requests
 var router=express.Router(); //this router (/db)
+var OrientDB=require("orientjs"); //Orient DB API
 
 //middleware to log date
 router.use(function(req, res, next){
@@ -31,6 +32,29 @@ router.post("/", function(req, res) {
 	//where is this coming from? 
 	res.write(JSON.stringify(req.body));
 	res.end();
+});
+
+//testing function
+router.post("/test", function(req,res){
+	//connect to the database
+	var dbO = OrientDB({
+		host: "localhost",
+		port: 2424,
+		username: "root",
+		password: "r00tbiskit"
+	});
+	var db = dbO.use( { name: 'cn1' , username: 'admin' , password: 'admin' } );
+	res.write('Using database: ' + db.name);
+	//select something
+	db.select().from('OUser').one().then( function(result){
+		res.end(JSON.stringify(result))
+	}, function(err){
+		res.end("didn't work" + JSON.stringify(err));
+	}
+	);
+	// CLOSE THE CONNECTION AT THE END
+	//db.close();
+	//res.end(" ... closed.");
 });
 
 //export the module for the main app to use

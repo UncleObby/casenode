@@ -37,6 +37,10 @@ testData["feeEarners"]=[
 testData["caseFields"]=[
 	{
 		type: "client",
+		clients: [
+			{firstname: "John",
+			lastname: "Smith"}
+		],
 		name: "John Smith",
 		matterDesc: "Application to set aside CCJ v HSBC",
 		caseStatusColor: uiColor["green"],
@@ -183,7 +187,13 @@ testData["caseFields"]=[
 	},
 	{
 		type: "client",
-		name: "Roger Moore",
+		clients: [
+			{
+				firstname: "Roger (007)",
+				lastname: "Moore"
+			}
+		],
+		name: "Rpoger Moore",
 		matterID: "MOO12-1",
 		matterDesc: "Claim against MI6",
 		caseStatusColor: uiColor["red"],
@@ -226,6 +236,9 @@ testData["caseFields"]=[
 	{
 		type: "client",
 		name: "Charles Wesley",
+		clients: {
+			name: "Charles Wesley"
+		},
 		matterID: "WES5-1",
 		matterDesc: "Settlement Agreement",
 		caseStatusColor: uiColor["green"],
@@ -266,6 +279,9 @@ testData["caseFields"]=[
 	{
 		type: "client",
 		name: "Michael Burke",
+		clients: {
+			name: "Michael Burke"
+		},
 		category: "Wills and Probate",
 		caseFeeEstimate: 350,
 		caseBilled: 0,
@@ -350,6 +366,9 @@ testData["caseFields"]=[
 	{
 		type: "enquiry",
 		name: "Stargazers Unlimited Limited",
+		clients: {
+			name: "targazers Unlimited Limited"
+		},
 		category: "Commercial",
 		contacts: [
 			{
@@ -376,6 +395,9 @@ testData["caseFields"]=[
 	{
 		type: "enquiry",
 		name: "John Boon",
+		clients: {
+			name: "John Boon"
+		},
 		category: "Settlement Agreement",
 		timestamp: 1450458146,
 		caseFeeEstimate: 500,
@@ -498,9 +520,15 @@ uiApp.controller("feeEarners", ['$scope', function($scope) {
 //create main case list controller
 uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	//assign developer's personal object to this
-	ob=this;
+	ob=this; //refers to $scope.caseList
 	//get some data........
 	this.list = JSON.parse(window.localStorage.getItem("caseFields")) || testData["caseFields"];
+	//create the "name" field from the clients names
+	for (var i=0; i<this.list.length; i++) {
+		for (var j=0; j<this.list[i].clients.length; j++) {
+			this.list[i].name = [this.list[i].clients[j].title, this.list[i].clients[j].firstname, this.list[i].clients[j].lastname].join(" ");
+		}
+	};
 	this.templates = JSON.parse(window.localStorage.getItem("templates")) || testData["templates"];
 	$scope.myO = JSON.parse(window.localStorage.getItem("myO")) || testData["myO"];
 
@@ -591,12 +619,12 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 		//send it to the database router 
 		var request={
 			method: "POST",
-			url: "http://localhost:8080/db",
+			url: "http://localhost:8080/db/test",
 			data: $scope.myO
 		}
 		$http(request).then( function(response){
 				//success callback
-				console.log("DB request OK: " + response.data );
+				console.log("DB request OK: " + JSON.stringify(response.data) );
 			}, function(){
 				//error callback
 				console.log("broken");
