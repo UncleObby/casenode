@@ -34,10 +34,54 @@ router.post("/", function(req, res) {
 	res.end();
 });
 
+//connection to database
+function DBConn(){
+	var dbO = OrientDB({host: "localhost",port: 2424,username: "root",password: "r00tbiskit"});
+	var db = dbO.use( { name: 'cn1' , username: 'admin' , password: 'admin' } );
+	return db;
+}
+
+//addPerson
+router.post("/addPerson", function(req,res){
+	//validate input
+	
+	//connect to the database
+	var db=DBConn();
+	//add the person
+	db.insert().into('person').set(req.body).one()
+		.then( function(result){ //ok
+			res.end(JSON.stringify(result))
+		}, function(err){ //err
+			res.end("didn't work" + JSON.stringify(err));
+		}
+	);
+	// CLOSE THE CONNECTION AT THE END
+	db.close();
+});
+
+//updatePerson
+router.post("/updatePerson", function(req,res){
+	//validate input
+	var RID = req.body.RID;
+	//connect to the database
+	var db=DBConn();
+	//add the person
+	db.update('person').set(req.body).where({'@rid':RID}).one()
+		.then( function(result){ //ok
+			res.end(JSON.stringify(result))
+		}, function(err){ //err
+			res.end("didn't work" + JSON.stringify(err));
+		}
+	);
+	// CLOSE THE CONNECTION AT THE END
+	db.close();
+});
+
+
 //testing function
 router.post("/test", function(req,res){
 	//connect to the database
-	var dbO = OrientDB({
+/*	var dbO = OrientDB({
 		host: "localhost",
 		port: 2424,
 		username: "root",
@@ -45,7 +89,8 @@ router.post("/test", function(req,res){
 	});
 	var db = dbO.use( { name: 'cn1' , username: 'admin' , password: 'admin' } );
 	res.write('Using database: ' + db.name);
-	//select something
+	*///select something
+	var db=DBConn();
 	db.select().from('OUser').one().then( function(result){
 		res.end(JSON.stringify(result))
 	}, function(err){
@@ -53,7 +98,7 @@ router.post("/test", function(req,res){
 	}
 	);
 	// CLOSE THE CONNECTION AT THE END
-	//db.close();
+	db.close();
 	//res.end(" ... closed.");
 });
 

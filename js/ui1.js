@@ -1,9 +1,11 @@
 /* ui1.js
 CaseNode User Interface ui1 main script
 Copyright(2)2015 O J Low
-Revision: 0.1
+Revision: 0.2
 Revision history:
 v0.1 - 2015-11-27 Incept
+v0.2 - 2016-01-10 database storage
+
 
 REQUIRES 
 angular.js
@@ -520,7 +522,7 @@ uiApp.controller("feeEarners", ['$scope', function($scope) {
 //create main case list controller
 uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	//assign developer's personal object to this
-	ob=this; //refers to $scope.caseList
+	ob=this; //refers to this controller $scope.caseList
 	//get some data........
 	this.list = JSON.parse(window.localStorage.getItem("caseFields")) || testData["caseFields"];
 	//create the "name" field from the clients names
@@ -583,7 +585,7 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	}
 	//save enquiry
 	this.saveEnquiry = function(){
-		//see if the enquiry is already saved. If it is, do nothing as the angular bindings will update it. 
+		//see if the enquiry is already included in caseFields. If it is, do nothing as the angular bindings will update it. 
 		//if the caseFields is undefined or has no 'type', then this is new, so create a new case variable for it
 		if ( ! this.enquiry.caseFields["type"] ) {
 			var d =new Date(); 
@@ -599,6 +601,7 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 			//this.enquiry.caseFields = this.list[this.list.push({type: "enquiry", timestamp: d.getTime()})];
 			console.log("created caseFields for client " + this.enquiry.caseFields['name']);
 		}
+		
 	}
 	//new enquiry
 	this.newEnquiry = function(){
@@ -612,7 +615,56 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 		//open a new window to show the document
 		window.open(doc.targetURL,"PreviewWindow");
 	}
-	//save data function
+	//database functions
+
+	//storeCase - adds or updates a case. For adding, must specify a person to be the client
+	function storeCase(caseObj, personRID){
+		//send the case to the database router
+		$http.post("http://localhost:8080/db/storeCase",personObj)
+			.then( function(response){ //success callback
+				//store the recordID
+				caseObj.RID=response.data["@rid"];
+				console.log("DB request OK: " + JSON.stringify(response.data) );
+			}, function(){
+				//error callback
+				console.log("broken");
+			});
+		console.log("DBaddPerson: ");
+		
+	}
+
+	//DBaddDoc - adds or a doc to a case or updates an existing one. Must speciry the Record ID of the case to add a doc
+	function storeDocument(docObj, caseRID){
+		
+	}
+
+	//DBaddPerson - adds a person the the database. Second argument is to force the addition of a person with an identical name
+	this.storePerson = function(personObj, bForceInsertIdentical){
+		//if the person had a record ID, then update, else add
+		if (personObj.RID) {
+			$http.post("http://localhost:8080/db/updatePerson",personObj)
+				.then( function(response){ //success callback
+					console.log("DB request OK: " + JSON.stringify(response.data) );
+				}, function(){ //error callback
+					console.log("broken");
+				}
+			);
+		} else { //no record ID, so add
+			$http.post("http://localhost:8080/db/addPerson",personObj)
+				.then( function(response){ //success callback
+					//store the recordID
+					personObj.RID=response.data["@rid"];
+					console.log("DB request OK: " + JSON.stringify(response.data) );
+				}, function(){ //error callback
+					console.log("broken");
+				}
+			);
+		}
+		console.log("storePerson: ");
+	}
+	
+	
+	//TESTING save data function
 	$scope.savemyO = function(){
 		//serialise and write to locaStorage
 		//window.localStorage.setItem("myO", JSON.stringify($scope.myO));
@@ -635,7 +687,6 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	
 	console.log("started controller caseList");
 }]);
-
 
 
 
