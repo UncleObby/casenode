@@ -62,7 +62,13 @@ router.post("/addPerson", function(req,res){
 //updatePerson
 router.post("/updatePerson", function(req,res){
 	//validate input
-	var RID = req.body.RID;
+	/* expects 
+	body:{
+		person: personObj
+	}
+	*/
+	var RID = req.body.person['@rid'];
+	
 	//connect to the database
 	var db=DBConn();
 	//add the person
@@ -77,26 +83,33 @@ router.post("/updatePerson", function(req,res){
 	db.close();
 });
 
+//addCase
+router.post("/addCase", function(req,res){
+	//validate input
+	/* expects:
+	body: {
+		person:{@rid: person.@rid}
+		case:{}
+	}
+	*/
+	//connect to the database
+	
+	//add the case and the edge to the client as a transcation
+	//
+	//db.insert('case').set()
+}
+);
+
+
+//updateCase
+
 
 //testing function
 router.post("/test", function(req,res){
 	//connect to the database
-/*	var dbO = OrientDB({
-		host: "localhost",
-		port: 2424,
-		username: "root",
-		password: "r00tbiskit"
-	});
-	var db = dbO.use( { name: 'cn1' , username: 'admin' , password: 'admin' } );
-	res.write('Using database: ' + db.name);
-	*///select something
 	var db=DBConn();
-	db.select().from('OUser').one().then( function(result){
-		res.end(JSON.stringify(result))
-	}, function(err){
-		res.end("didn't work" + JSON.stringify(err));
-	}
-	);
+	//return what we were POSTed
+	res.end(JSON.stringify(req.body));
 	// CLOSE THE CONNECTION AT THE END
 	db.close();
 	//res.end(" ... closed.");

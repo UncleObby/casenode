@@ -98,7 +98,7 @@
 			<!-- cases list-->
 			<div ng-show="caseList.activeTab['left'] == 'Cases'">
 				<div class="panel-group">
-					<div ng-repeat="case in caseList.list | filter:{type:'client'}" >
+					<div ng-repeat="case in caseList.list | filter:{type:'client'}" ><!-- only show clients in this list-->
 						<div ng-click="caseList.choose(case)" class="case-list-item panel panel-default" ng-class="{'active': caseList.currCaseN == $index}" ng-style="{'background-color' : case.caseStatusColor}" >
 							<span title="{{case.name}}"> {{case.name}}<br /></span>
 							<span title="{{case.matterDesc}}"> {{case.matterDesc}}<br /></span>
@@ -144,7 +144,9 @@
 				<div ng-repeat="doc in caseList.current.documents"> 
 					<div class="panel panel-default doc-list-item" ng-class-even="'even-row'" ng-class-odd="'odd-row'"
 						ng-click="caseList.docPreview(doc)" >
-						{{doc.date}} <span title="{{doc.title}}">{{doc.title}}</span>
+						{{doc.date}}
+						<span ng-class="{'ui-icon':1, 'ui-icon-blank':!doc.doctype, 'ui-icon-note':doc.doctype=='.txt', 'ui-icon-document':doc.doctype=='.doc'||doc.doctype=='.pdf', 'ui-icon-mail-closed':doc.doctype=='.eml'||doc.doctype=='.msg'}" style="display:inline-block" title="{{doc.doctype}}"></span>
+						<span title="{{doc.title}}">{{doc.title}}</span>
 					</div>
 				</div>
 			</div>
@@ -285,15 +287,15 @@
 						</div>
 						<div class="row form-group">
 							<input ng-model="caseList.enquiry.caseFields['contacts'][0]['mobile']" type="text" placeholder="Mobile" size=13>
-							<input ng-model="caseList.enquiry.landline" type="text" placeholder="Landline" size=13>
-							<input ng-model="caseList.enquiry.email" type="text" placeholder="Email" size=30>
+							<input ng-model="caseList.enquiry.caseFields['contacts'][0]['landline']" type="text" placeholder="Landline" size=13>
+							<input ng-model="caseList.enquiry.caseFields['contacts'][0]['email']" type="text" placeholder="Email" size=30>
 						</div>
 						<div class="row form-group">
 							<input ng-model="caseList.enquiry.address" type="text" placeholder="Address" size=50>
 							<input ng-model="caseList.enquiry.postcode" type="text" placeholder="Postcode" size=12>
 						</div>
 						<div class="row">
-							<textarea ng-model="caseList.enquiry.notes" cols=60 rows=10 placeholder="Notes"></textarea>
+							<textarea ng-model="caseList.enquiry.caseFields['documents'][0]['content']['txt']" cols=60 rows=10 placeholder="Notes"></textarea>
 						</div>
 						<div class="row">
 							<input ng-model="caseList.enquiry.matterDesc" size=60 placeholder="Matter">

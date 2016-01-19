@@ -40,11 +40,15 @@ testData["caseFields"]=[
 	{
 		type: "client",
 		clients: [
-			{firstname: "John",
-			lastname: "Smith"}
+			{
+				"@rid":"#13:12",
+				firstname: "John",
+				lastname: "Smith",
+				title:"Mr"
+			}
 		],
 		name: "John Smith",
-		matterDesc: "Application to set aside CCJ v HSBC",
+		title: "Application to set aside CCJ v HSBC",
 		caseStatusColor: uiColor["green"],
 		caseFeeEstimate: 750,
 		caseBilled: 520,
@@ -81,123 +85,20 @@ testData["caseFields"]=[
 			{key: "Part 13.2 ?", value: "yes"},
 			{key: "Part 13.3 ?", value: "yes"},
 			{key: "What?", value: ""}
-		],
-		documents: [
-			{
-				doctype: '.msg',
-				title: "Email to other side re consent",
-				filepath: "",
-				date: "04/08/2015"
-			},
-			{
-				title: "Draft Consent Order",
-				filepath: "",
-				date: "04/08/2015"
-			},
-			{
-				title: "Letter to o-s serving N244",
-				doctype: ".doc",
-				filepath: "",
-				date: "03/08/2015"
-				
-			},
-			{
-				title: "Letter to court filing N244",
-				doctype: ".doc",
-				filepath: "",
-				date: "03/08/2015"
-				
-			},
-			{
-				title: "Application Notice",
-				doctype: ".doc",
-				targetURL: "file:///C:/Users/Oliver.Low/Documents/dev/testdata/N244 set aside.doc",
-				date: "03/08/2015"
-				
-			},
-			{
-				title: "Draft Defence",
-				doctype: ".pdf",
-				targetURL: "file:///C:/Users/Oliver.Low/Documents/dev/testdata/Draft Defence.pdf",
-				date: "02/08/2015"
-				
-			},
-			{
-				title: "Email from client",
-				doctype: ".eml",
-				filepath: "",
-				date: "29/07/2015"
-				
-			},
-			{
-				title: "Credit report for client (Experian)",
-				doctype: ".pdf",
-				filepath: "testdata/N244 set aside.doc",
-				date: "29/07/2015"
-				
-			},
-			{
-				title: "Client email to confirm evidence",
-				doctype: ".eml",
-				filepath: "",
-				date: "29/07/2015"
-			},
-			{
-				title: "Your evidence",
-				doctype: ".eml",
-				filepath: "",
-				date: "28/07/2015"
-			},
-			{
-				title: "Client Care Letter",
-				doctype: ".doc",
-				filepath: "",
-				date: "26/07/2015"
-				
-			},
-			{
-				title: "Chronology",
-				doctype: ".doc",
-				filepath: "",
-				date: "26/07/2015"
-				
-			},
-			{
-				title: "Client registration form",
-				doctype: ".doc",
-				filepath: "",
-				date: "25/07/2015"
-				
-			},
-			{
-				title: "Advice and estimate",
-				doctype: ".eml",
-				filepath: "",
-				date: "23/07/2015"
-				
-			},
-			{
-				title: "Note of enquiry",
-				doctype: "attendancenote",
-				date: "23/07/2015",
-				filepath: "",
-				content: {
-					HTML: "<H2>Note of enquiry</h2><p>test</p>"
-				}
-			}
 		]
 	},
 	{
 		type: "client",
 		clients: [
 			{
+				"@rid": "#13:13",
 				firstname: "Roger (007)",
 				lastname: "Moore"
 			}
 		],
 		name: "Rpoger Moore",
 		matterID: "MOO12-1",
-		matterDesc: "Claim against MI6",
+		title: "Claim against MI6",
 		caseStatusColor: uiColor["red"],
 		caseFeeEstimate: 750,
 		caseBilled: 0,
@@ -242,7 +143,7 @@ testData["caseFields"]=[
 			name: "Charles Wesley"
 		},
 		matterID: "WES5-1",
-		matterDesc: "Settlement Agreement",
+		title: "Settlement Agreement",
 		caseStatusColor: uiColor["green"],
 		caseFeeEstimate: 500,
 		caseFeeType: "agreed fee",
@@ -435,6 +336,117 @@ testData["caseFields"]=[
 		]
 	}
 ];
+
+testData['documents'] = [
+	{
+		doctype: '.msg',
+		title: "Email to other side re consent",
+		filepath: "",
+		date: "04/08/2015"
+	},
+	{
+		title: "Draft Consent Order",
+		filepath: "",
+		date: "04/08/2015"
+	},
+	{
+		title: "Letter to o-s serving N244",
+		doctype: ".doc",
+		filepath: "",
+		date: "03/08/2015"
+		
+	},
+	{
+		title: "Letter to court filing N244",
+		doctype: ".doc",
+		filepath: "",
+		date: "03/08/2015"
+		
+	},
+	{
+		title: "Application Notice",
+		doctype: ".doc",
+		targetURL: "file:///C:/Users/Oliver.Low/Documents/dev/testdata/N244 set aside.doc",
+		date: "03/08/2015"
+		
+	},
+	{
+		title: "Draft Defence",
+		doctype: ".pdf",
+		targetURL: "file:///C:/Users/Oliver.Low/Documents/dev/testdata/Draft Defence.pdf",
+		date: "02/08/2015"
+		
+	},
+	{
+		title: "Email from client",
+		doctype: ".eml",
+		filepath: "",
+		date: "29/07/2015"
+		
+	},
+	{
+		title: "Credit report for client (Experian)",
+		doctype: ".pdf",
+		filepath: "testdata/N244 set aside.doc",
+		date: "29/07/2015"
+		
+	},
+	{
+		title: "Client email to confirm evidence",
+		doctype: ".eml",
+		filepath: "",
+		date: "29/07/2015"
+	},
+	{
+		title: "Your evidence",
+		doctype: ".eml",
+		filepath: "",
+		date: "28/07/2015"
+	},
+	{
+		title: "Client Care Letter",
+		doctype: ".doc",
+		filepath: "",
+		date: "26/07/2015"
+		
+	},
+	{
+		title: "Chronology",
+		doctype: ".doc",
+		filepath: "",
+		date: "26/07/2015"
+		
+	},
+	{
+		title: "Client registration form",
+		doctype: ".doc",
+		filepath: "",
+		date: "25/07/2015"
+		
+	},
+	{
+		title: "Advice and estimate",
+		doctype: ".eml",
+		filepath: "",
+		date: "23/07/2015"
+		
+	},
+	{
+		title: "Note of enquiry",
+		doctype: "attendancenote",
+		date: "23/07/2015",
+		filepath: "",
+		content: {
+			HTML: "<H2>Note of enquiry</h2><p>test</p>"
+		}
+	}
+];
+//attach the documents to ecah case
+testData['caseFields'][0].documents=new Array();
+for (var i=0; i<15; i++){
+	testData['caseFields'][0].documents.push(testData['documents'][i]);
+}
+
 //for (var i=0; i < 1; i++) testData["caseFields"].push(testData["caseFields"][0]); //tried up to 10,000
 
 
@@ -511,9 +523,6 @@ $(document).ready(function(){
 //create angular app, indlucing the sanitize code to allow HTML binding
 var uiApp=angular.module("uiApp",['ngSanitize']);
 
-//create the current case data service
-
-
 //create a controller for fee-earner select boxes
 uiApp.controller("feeEarners", ['$scope', function($scope) {
 	$scope.list = testData["feeEarners"];
@@ -523,6 +532,7 @@ uiApp.controller("feeEarners", ['$scope', function($scope) {
 uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	//assign developer's personal object to this
 	ob=this; //refers to this controller $scope.caseList
+	obs=$scope; 
 	//get some data........
 	this.list = JSON.parse(window.localStorage.getItem("caseFields")) || testData["caseFields"];
 	//create the "name" field from the clients names
@@ -618,18 +628,22 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	//database functions
 
 	//storeCase - adds or updates a case. For adding, must specify a person to be the client
-	function storeCase(caseObj, personRID){
+	function storeCase(caseObj, personObj){
+		var data = {
+			person: {"@rid": personObj["@rid"]},
+			'case': caseObj
+		}
 		//send the case to the database router
-		$http.post("http://localhost:8080/db/storeCase",personObj)
+		$http.post("http://localhost:8080/db/storeCase",data)
 			.then( function(response){ //success callback
-				//store the recordID
-				caseObj.RID=response.data["@rid"];
+				//store the recordID returned
+				caseObj['@rid']=response.data["@rid"];
 				console.log("DB request OK: " + JSON.stringify(response.data) );
 			}, function(){
 				//error callback
 				console.log("broken");
 			});
-		console.log("DBaddPerson: ");
+		console.log("storeCase: ");
 		
 	}
 
@@ -638,11 +652,13 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 		
 	}
 
-	//DBaddPerson - adds a person the the database. Second argument is to force the addition of a person with an identical name
+	//DBaddPerson - async adds a person the the database. Second argument is to force the addition of a person with an identical name
 	this.storePerson = function(personObj, bForceInsertIdentical){
+		var data={person: personObj};
 		//if the person had a record ID, then update, else add
-		if (personObj.RID) {
-			$http.post("http://localhost:8080/db/updatePerson",personObj)
+		if (personObj['@rid'] &&(!(bForceInsertIdentical===true))) {
+			data['@rid']=personObj['@rid'];
+			$http.post("http://localhost:8080/db/updatePerson",data)
 				.then( function(response){ //success callback
 					console.log("DB request OK: " + JSON.stringify(response.data) );
 				}, function(){ //error callback
@@ -650,10 +666,10 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 				}
 			);
 		} else { //no record ID, so add
-			$http.post("http://localhost:8080/db/addPerson",personObj)
+			$http.post("http://localhost:8080/db/addPerson",data)
 				.then( function(response){ //success callback
 					//store the recordID
-					personObj.RID=response.data["@rid"];
+					personObj['@rid']=response.data["@rid"];
 					console.log("DB request OK: " + JSON.stringify(response.data) );
 				}, function(){ //error callback
 					console.log("broken");
@@ -663,6 +679,19 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 		console.log("storePerson: ");
 	}
 	
+	this.dbtest=function(data){
+			$http.post("http://localhost:8080/db/test",data)
+				.then( function(response){ //success callback
+					console.log("DB request OK: " + JSON.stringify(response.data) );
+				}, function(){ //error callback
+					console.log("broken");
+				}
+			);
+		
+	}
+	
+	//fetch case
+	//fetch the documents
 	
 	//TESTING save data function
 	$scope.savemyO = function(){
