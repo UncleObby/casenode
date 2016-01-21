@@ -48,11 +48,11 @@ router.post("/addPerson", function(req,res){
 	//connect to the database
 	var db=DBConn();
 	//add the person
-	db.insert().into('person').set(req.body).one()
+	db.insert().into('person').set(req.body.person).one()
 		.then( function(result){ //ok
-			res.end(JSON.stringify(result))
+			res.status(201).end(JSON.stringify(result))
 		}, function(err){ //err
-			res.end("didn't work" + JSON.stringify(err));
+			res.status(500).end("didn't work" + JSON.stringify(err));
 		}
 	);
 	// CLOSE THE CONNECTION AT THE END
@@ -67,16 +67,18 @@ router.post("/updatePerson", function(req,res){
 		person: personObj
 	}
 	*/
-	var RID = req.body.person['@rid'];
 	
 	//connect to the database
 	var db=DBConn();
-	//add the person
-	db.update('person').set(req.body).where({'@rid':RID}).one()
+	//update the person - NB need to strip the @rid from the object or OrientDB will throw an error
+	var sRID=req.body.person['@rid'];// remember the record ID
+	delete req.body.person['@rid']; //remove it fro the object or OrientDB will reject 
+	db.update('person').set(req.body.person)
+		.where({'@rid':sRID}).one()
 		.then( function(result){ //ok
-			res.end(JSON.stringify(result))
+			res.status(200).end(JSON.stringify(result))
 		}, function(err){ //err
-			res.end("didn't work" + JSON.stringify(err));
+			res.status(500).end("didn't work" + JSON.stringify(err));
 		}
 	);
 	// CLOSE THE CONNECTION AT THE END
@@ -95,7 +97,7 @@ router.post("/addCase", function(req,res){
 	//connect to the database
 	
 	//add the case and the edge to the client as a transcation
-	//
+	
 	//db.insert('case').set()
 }
 );

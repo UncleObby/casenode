@@ -17,6 +17,12 @@ jquery-ui.js
 //developer's personal object
 var ob = {};
 
+//define our Edge type
+function Edge(eOut, eIn){
+	this.eIn=eIn;
+	this.eOut=eOut;
+}
+
 //some color data:
 var uiColor = {green:"#E9FFEE",red:"#FFEEE9"};
 //some test data:
@@ -337,101 +343,101 @@ testData["caseFields"]=[
 	}
 ];
 
-testData['documents'] = [
-	{
+//documents
+testData['documents'] = [];
+testData['documents'][0]=	{
 		doctype: '.msg',
 		title: "Email to other side re consent",
 		filepath: "",
 		date: "04/08/2015"
-	},
-	{
+	}
+testData['documents'][1]=	{
 		title: "Draft Consent Order",
 		filepath: "",
 		date: "04/08/2015"
-	},
-	{
+	}
+testData['documents'][2]=	{
 		title: "Letter to o-s serving N244",
 		doctype: ".doc",
 		filepath: "",
 		date: "03/08/2015"
 		
-	},
-	{
+	}
+testData['documents'][3]=	{
 		title: "Letter to court filing N244",
 		doctype: ".doc",
 		filepath: "",
 		date: "03/08/2015"
 		
-	},
-	{
+	}
+testData['documents'][4]={
 		title: "Application Notice",
 		doctype: ".doc",
 		targetURL: "file:///C:/Users/Oliver.Low/Documents/dev/testdata/N244 set aside.doc",
 		date: "03/08/2015"
 		
-	},
-	{
+	}
+testData['documents'][5]={
 		title: "Draft Defence",
 		doctype: ".pdf",
 		targetURL: "file:///C:/Users/Oliver.Low/Documents/dev/testdata/Draft Defence.pdf",
 		date: "02/08/2015"
 		
-	},
-	{
+	}
+testData['documents'][6]={
 		title: "Email from client",
 		doctype: ".eml",
 		filepath: "",
 		date: "29/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][7]={
 		title: "Credit report for client (Experian)",
 		doctype: ".pdf",
 		filepath: "testdata/N244 set aside.doc",
 		date: "29/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][8]={
 		title: "Client email to confirm evidence",
 		doctype: ".eml",
 		filepath: "",
 		date: "29/07/2015"
-	},
-	{
+	}
+testData['documents'][9]={
 		title: "Your evidence",
 		doctype: ".eml",
 		filepath: "",
 		date: "28/07/2015"
-	},
-	{
+	}
+testData['documents'][10]={
 		title: "Client Care Letter",
 		doctype: ".doc",
 		filepath: "",
-		date: "26/07/2015"
-		
-	},
-	{
+		date: "26/07/2015"		
+	}
+testData['documents'][11]={
 		title: "Chronology",
 		doctype: ".doc",
 		filepath: "",
 		date: "26/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][12]={
 		title: "Client registration form",
 		doctype: ".doc",
 		filepath: "",
 		date: "25/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][13]={
 		title: "Advice and estimate",
 		doctype: ".eml",
 		filepath: "",
 		date: "23/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][14]={
 		title: "Note of enquiry",
 		doctype: "attendancenote",
 		date: "23/07/2015",
@@ -440,11 +446,13 @@ testData['documents'] = [
 			HTML: "<H2>Note of enquiry</h2><p>test</p>"
 		}
 	}
-];
+
 //attach the documents to ecah case
-testData['caseFields'][0].documents=new Array();
 for (var i=0; i<15; i++){
-	testData['caseFields'][0].documents.push(testData['documents'][i]);
+	//add a new edge to the collection of document egdes on the case
+	var e = new Edge(testData['documents'][i],testData['caseFields'][0]); //using the 'new' keyword to highlight that we're creating a new one and will be reusing e
+	(testData['caseFields'][0].documents || (testData['caseFields'][0].documents = []) ).push(e); //create array if required
+	//testData['caseFields'][0].documents.push(testData['documents'][i]);
 }
 
 //for (var i=0; i < 1; i++) testData["caseFields"].push(testData["caseFields"][0]); //tried up to 10,000
@@ -639,7 +647,7 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 				//store the recordID returned
 				caseObj['@rid']=response.data["@rid"];
 				console.log("DB request OK: " + JSON.stringify(response.data) );
-			}, function(){
+			}, function(response){
 				//error callback
 				console.log("broken");
 			});
@@ -661,8 +669,8 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 			$http.post("http://localhost:8080/db/updatePerson",data)
 				.then( function(response){ //success callback
 					console.log("DB request OK: " + JSON.stringify(response.data) );
-				}, function(){ //error callback
-					console.log("broken");
+				}, function(response){ //error callback
+					console.log("broken" + JSON.stringify(response.data) );
 				}
 			);
 		} else { //no record ID, so add
@@ -671,8 +679,8 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 					//store the recordID
 					personObj['@rid']=response.data["@rid"];
 					console.log("DB request OK: " + JSON.stringify(response.data) );
-				}, function(){ //error callback
-					console.log("broken");
+				}, function(response){ //error callback
+					console.log("broken" + JSON.stringify(response.data) );
 				}
 			);
 		}
@@ -683,8 +691,8 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 			$http.post("http://localhost:8080/db/test",data)
 				.then( function(response){ //success callback
 					console.log("DB request OK: " + JSON.stringify(response.data) );
-				}, function(){ //error callback
-					console.log("broken");
+				}, function(response){ //error callback
+					console.log("broken" + JSON.stringify(response.data) );
 				}
 			);
 		

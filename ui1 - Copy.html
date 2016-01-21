@@ -101,7 +101,7 @@
 					<div ng-repeat="case in caseList.list | filter:{type:'client'}" ><!-- only show clients in this list-->
 						<div ng-click="caseList.choose(case)" class="case-list-item panel panel-default" ng-class="{'active': caseList.currCaseN == $index}" ng-style="{'background-color' : case.caseStatusColor}" >
 							<span title="{{case.name}}"> {{case.name}}<br /></span>
-							<span title="{{case.matterDesc}}"> {{case.matterDesc}}<br /></span>
+							<span title="{{case.title}}"> {{case.title}}<br /></span>
 							<span title="{{case.caseExpecting}}"> {{case.caseExpecting}}</span>
 						</div>
 					</div>
@@ -138,7 +138,7 @@
 			<span>Current {{caseList.current.type}} file</span>
 				<div class="case-list-item panel panel-default" ng-style="{'background-color' : caseList.current.caseStatusColor}">
 					<span title="{{caseList.current.name}}">{{caseList.current.name}}</span><br />
-					<span title="{{caseList.current.matterDesc}}">{{caseList.current.matterDesc}}</span><br />
+					<span title="{{caseList.current.title}}">{{caseList.current.title}}</span><br />
 					<span title="{{caseList.current.caseExpecting}}">{{caseList.current.caseExpecting}}</span>
 				</div>
 				<div ng-repeat="doc in caseList.current.documents"> 
@@ -298,7 +298,7 @@
 							<textarea ng-model="caseList.enquiry.caseFields['documents'][0]['content']['txt']" cols=60 rows=10 placeholder="Notes"></textarea>
 						</div>
 						<div class="row">
-							<input ng-model="caseList.enquiry.matterDesc" size=60 placeholder="Matter">
+							<input ng-model="caseList.enquiry.title" size=60 placeholder="Matter">
 							<input ng-model="caseList.enquiry.category" size=20 placeholder="Category">
 							<div ng-controller="feeEarners"><!-- this uses the feeEarner controller-->
 								<select ng-model="selected" ng-options="opt.initials for opt in list"></select>
