@@ -67,22 +67,25 @@ router.post("/updatePerson", function(req,res){
 		person: personObj
 	}
 	*/
-	
-	//connect to the database
-	var db=DBConn();
-	//update the person - NB need to strip the @rid from the object or OrientDB will throw an error
-	var sRID=req.body.person['@rid'];// remember the record ID
-	delete req.body.person['@rid']; //remove it fro the object or OrientDB will reject 
-	db.update('person').set(req.body.person)
-		.where({'@rid':sRID}).one()
-		.then( function(result){ //ok
-			res.status(200).end(JSON.stringify(result))
-		}, function(err){ //err
-			res.status(500).end("didn't work" + JSON.stringify(err));
-		}
-	);
-	// CLOSE THE CONNECTION AT THE END
-	db.close();
+	if (req.body.person){
+		//connect to the database
+		var db=DBConn();
+		//update the person - NB need to strip the @rid from the object or OrientDB will throw an error
+		var sRID=req.body.person['@rid'];// remember the record ID
+		delete req.body.person['@rid']; //remove it fro the object or OrientDB will reject 
+		db.update('person').set(req.body.person)
+			.where({'@rid':sRID}).one()
+			.then( function(result){ //ok
+				res.status(200).end(JSON.stringify(result))
+			}, function(err){ //err
+				res.status(500).end("didn't work" + JSON.stringify(err));
+			}
+		);
+		// CLOSE THE CONNECTION AT THE END
+		db.close();
+	} else {
+		res.status(400).end("You must POST a person object");
+	}
 });
 
 //addCase

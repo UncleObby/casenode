@@ -144,9 +144,9 @@
 				<div ng-repeat="doc in caseList.current.documents"> 
 					<div class="panel panel-default doc-list-item" ng-class-even="'even-row'" ng-class-odd="'odd-row'"
 						ng-click="caseList.docPreview(doc)" >
-						{{doc.eOut.date}}
+						{{doc.date}}
 						<span ng-class="{'ui-icon':1, 'ui-icon-blank':!doc.doctype, 'ui-icon-note':doc.doctype=='.txt', 'ui-icon-document':doc.doctype=='.doc'||doc.doctype=='.pdf', 'ui-icon-mail-closed':doc.doctype=='.eml'||doc.doctype=='.msg'}" style="display:inline-block" title="{{doc.doctype}}"></span>
-						<span title="{{doc.title}}">{{doc.eOut.title}}</span>
+						<span title="{{doc.title}}">{{doc.title}}</span>
 					</div>
 				</div>
 			</div>

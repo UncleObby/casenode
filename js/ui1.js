@@ -317,7 +317,7 @@ testData["caseFields"]=[
 				name: "John Boon",
 				landline: "0115 4960 781",
 				email: "boonj@example.com",
-				addressHTML: "DUck Ranch, Plumstead<br />Southend-on-Sea<br />CA4 2BP"
+				addressHTML: "Duck Ranch, Plumstead<br />Southend-on-Sea<br />CA4 2BP"
 			}	
 		],
 		info: [
@@ -449,10 +449,7 @@ testData['documents'][14]={
 
 //attach the documents to ecah case
 for (var i=0; i<15; i++){
-	//add a new edge to the collection of document egdes on the case
-	var e = new Edge(testData['documents'][i],testData['caseFields'][0]); //using the 'new' keyword to highlight that we're creating a new one and will be reusing e
-	(testData['caseFields'][0].documents || (testData['caseFields'][0].documents = []) ).push(e); //create array if required
-	//testData['caseFields'][0].documents.push(testData['documents'][i]);
+	(testData['caseFields'][0].documents || (testData['caseFields'][0].documents = []) ).push(testData['documents'][i]); //create array if required
 }
 
 //for (var i=0; i < 1; i++) testData["caseFields"].push(testData["caseFields"][0]); //tried up to 10,000
@@ -635,7 +632,8 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	}
 	//database functions
 
-	//storeCase - adds or updates a case. For adding, must specify a person to be the client
+	//storeCase - adds or updates a case. 
+	//for now, we're being lazy and sending the whole case over. Later we'll revisit this and see if we can avoid sending more than required
 	function storeCase(caseObj, personObj){
 		var data = {
 			person: {"@rid": personObj["@rid"]},
