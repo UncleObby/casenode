@@ -89,14 +89,42 @@ router.post("/updatePerson", function(req,res){
 });
 
 //addCase
-router.post("/addCase", function(req,res){
+router.post("/storeCase", function(req,res){
 	//validate input
 	/* expects:
 	body: {
 		person:{@rid: person.@rid}
-		case:{}
+		caseDetails:{}
 	}
 	*/
+	var db=DBConn();
+	//add or update?
+	//if we've got an ID, then update existing, else add new
+	if (req.body.caseDetails['@rid']){
+		//transfer @rid from input to where var
+		var sRID=req.body.caseDetails['@rid'];
+		delete req.body.caseDetails['@rid'];
+		db.update('case').set(req.body.caseDetails)
+			.where({'@rid':sRID}).one()
+			.then( function (result){ //ok
+				//return the number of updates, i.e. '1'
+				res.status(200).end(JSON.stringify(result))
+			}, function(err){//err
+				res.status(500).end("didn't work" + JSON.stringify(err));			
+			}
+		);
+		db.close();
+	} else { // no @rid so add a new record
+		db.create('VERTEX', 'case').set(req.body.caseDetails).one()
+			.then( function(result){ //ok
+				res.status(201).end(JSON.stringify(result))
+			}, function(err){ //err
+				res.status(500).end("didn't work" + JSON.stringify(err));
+			}
+		);
+		db.close();
+	}
+	
 	//connect to the database
 	
 	//add the case and the edge to the client as a transcation

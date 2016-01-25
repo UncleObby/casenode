@@ -17,6 +17,12 @@ jquery-ui.js
 //developer's personal object
 var ob = {};
 
+//define our Edge type
+function Edge(eOut, eIn){
+	this.eIn=eIn;
+	this.eOut=eOut;
+}
+
 //some color data:
 var uiColor = {green:"#E9FFEE",red:"#FFEEE9"};
 //some test data:
@@ -38,22 +44,16 @@ testData["feeEarners"]=[
 ];
 testData["caseFields"]=[
 	{
-		type: "client",
-		clients: [
-			{
-				"@rid":"#13:12",
-				firstname: "John",
-				lastname: "Smith",
-				title:"Mr"
-			}
-		],
-		name: "John Smith",
-		title: "Application to set aside CCJ v HSBC",
-		caseStatusColor: uiColor["green"],
-		caseFeeEstimate: 750,
-		caseBilled: 520,
-		caseWIPValue: 120,
-		caseExpecting: "waiting for o/s",
+		details:{
+			caseID: "JS1",
+			type: "client",
+			title: "Application to set aside CCJ v HSBC",
+			caseStatusColor: uiColor["green"],
+			caseFeeEstimate: 750,
+			caseBilled: 520,
+			caseWIPValue: 120,
+			caseExpecting: "waiting for o/s"
+		},
 		contacts: [
 			{	
 				party: "Client",
@@ -88,14 +88,8 @@ testData["caseFields"]=[
 		]
 	},
 	{
+		caseID: "RM1",
 		type: "client",
-		clients: [
-			{
-				"@rid": "#13:13",
-				firstname: "Roger (007)",
-				lastname: "Moore"
-			}
-		],
 		name: "Rpoger Moore",
 		matterID: "MOO12-1",
 		title: "Claim against MI6",
@@ -311,7 +305,7 @@ testData["caseFields"]=[
 				name: "John Boon",
 				landline: "0115 4960 781",
 				email: "boonj@example.com",
-				addressHTML: "DUck Ranch, Plumstead<br />Southend-on-Sea<br />CA4 2BP"
+				addressHTML: "Duck Ranch, Plumstead<br />Southend-on-Sea<br />CA4 2BP"
 			}	
 		],
 		info: [
@@ -337,101 +331,126 @@ testData["caseFields"]=[
 	}
 ];
 
-testData['documents'] = [
+//persons
+testData['persons']= [
 	{
+		"@rid":"#13:12",
+		firstname: "John",
+		lastname: "Smith",
+		title:"Mr"
+	},
+	{
+		"@rid": "#13:13",
+		firstname: "Roger (007)",
+		lastname: "Moore",
+		title:"Sir"
+	}
+];
+//clients
+testData['clients']= [
+	{
+		caseID:"JS1",
+		caseFields: testData['caseFields'][0],
+		person: testData['persons'][0]
+	}
+];
+(testData['caseFields'][0]['clients'] || testData['caseFields'][0]['clients']=[]) = testData['persons'][0]
+
+//documents
+testData['documents'] = [];
+testData['documents'][0]=	{
 		doctype: '.msg',
 		title: "Email to other side re consent",
 		filepath: "",
 		date: "04/08/2015"
-	},
-	{
+	}
+testData['documents'][1]=	{
 		title: "Draft Consent Order",
 		filepath: "",
 		date: "04/08/2015"
-	},
-	{
+	}
+testData['documents'][2]=	{
 		title: "Letter to o-s serving N244",
 		doctype: ".doc",
 		filepath: "",
 		date: "03/08/2015"
 		
-	},
-	{
+	}
+testData['documents'][3]=	{
 		title: "Letter to court filing N244",
 		doctype: ".doc",
 		filepath: "",
 		date: "03/08/2015"
 		
-	},
-	{
+	}
+testData['documents'][4]={
 		title: "Application Notice",
 		doctype: ".doc",
 		targetURL: "file:///C:/Users/Oliver.Low/Documents/dev/testdata/N244 set aside.doc",
 		date: "03/08/2015"
 		
-	},
-	{
+	}
+testData['documents'][5]={
 		title: "Draft Defence",
 		doctype: ".pdf",
 		targetURL: "file:///C:/Users/Oliver.Low/Documents/dev/testdata/Draft Defence.pdf",
 		date: "02/08/2015"
 		
-	},
-	{
+	}
+testData['documents'][6]={
 		title: "Email from client",
 		doctype: ".eml",
 		filepath: "",
 		date: "29/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][7]={
 		title: "Credit report for client (Experian)",
 		doctype: ".pdf",
 		filepath: "testdata/N244 set aside.doc",
 		date: "29/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][8]={
 		title: "Client email to confirm evidence",
 		doctype: ".eml",
 		filepath: "",
 		date: "29/07/2015"
-	},
-	{
+	}
+testData['documents'][9]={
 		title: "Your evidence",
 		doctype: ".eml",
 		filepath: "",
 		date: "28/07/2015"
-	},
-	{
+	}
+testData['documents'][10]={
 		title: "Client Care Letter",
 		doctype: ".doc",
 		filepath: "",
-		date: "26/07/2015"
-		
-	},
-	{
+		date: "26/07/2015"		
+	}
+testData['documents'][11]={
 		title: "Chronology",
 		doctype: ".doc",
 		filepath: "",
 		date: "26/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][12]={
 		title: "Client registration form",
 		doctype: ".doc",
 		filepath: "",
 		date: "25/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][13]={
 		title: "Advice and estimate",
 		doctype: ".eml",
 		filepath: "",
 		date: "23/07/2015"
 		
-	},
-	{
+	}
+testData['documents'][14]={
 		title: "Note of enquiry",
 		doctype: "attendancenote",
 		date: "23/07/2015",
@@ -440,11 +459,10 @@ testData['documents'] = [
 			HTML: "<H2>Note of enquiry</h2><p>test</p>"
 		}
 	}
-];
+
 //attach the documents to ecah case
-testData['caseFields'][0].documents=new Array();
 for (var i=0; i<15; i++){
-	testData['caseFields'][0].documents.push(testData['documents'][i]);
+	(testData['caseFields'][0].documents || (testData['caseFields'][0].documents = []) ).push(testData['documents'][i]); //create array if required
 }
 
 //for (var i=0; i < 1; i++) testData["caseFields"].push(testData["caseFields"][0]); //tried up to 10,000
@@ -535,13 +553,8 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	obs=$scope; 
 	//get some data........
 	this.list = JSON.parse(window.localStorage.getItem("caseFields")) || testData["caseFields"];
-	//create the "name" field from the clients names
-	for (var i=0; i<this.list.length; i++) {
-		for (var j=0; j<this.list[i].clients.length; j++) {
-			this.list[i].name = [this.list[i].clients[j].title, this.list[i].clients[j].firstname, this.list[i].clients[j].lastname].join(" ");
-		}
-	};
 	this.templates = JSON.parse(window.localStorage.getItem("templates")) || testData["templates"];
+	this.clientList = testData['clients'];
 	$scope.myO = JSON.parse(window.localStorage.getItem("myO")) || testData["myO"];
 
 	//initialise local variables
@@ -627,7 +640,8 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	}
 	//database functions
 
-	//storeCase - adds or updates a case. For adding, must specify a person to be the client
+	//storeCase - adds or updates a case. 
+	//for now, we're being lazy and sending the whole case over. Later we'll revisit this and see if we can avoid sending more than required
 	function storeCase(caseObj, personObj){
 		var data = {
 			person: {"@rid": personObj["@rid"]},
@@ -639,7 +653,7 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 				//store the recordID returned
 				caseObj['@rid']=response.data["@rid"];
 				console.log("DB request OK: " + JSON.stringify(response.data) );
-			}, function(){
+			}, function(response){
 				//error callback
 				console.log("broken");
 			});
@@ -661,8 +675,8 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 			$http.post("http://localhost:8080/db/updatePerson",data)
 				.then( function(response){ //success callback
 					console.log("DB request OK: " + JSON.stringify(response.data) );
-				}, function(){ //error callback
-					console.log("broken");
+				}, function(response){ //error callback
+					console.log("broken" + JSON.stringify(response.data) );
 				}
 			);
 		} else { //no record ID, so add
@@ -671,8 +685,8 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 					//store the recordID
 					personObj['@rid']=response.data["@rid"];
 					console.log("DB request OK: " + JSON.stringify(response.data) );
-				}, function(){ //error callback
-					console.log("broken");
+				}, function(response){ //error callback
+					console.log("broken" + JSON.stringify(response.data) );
 				}
 			);
 		}
@@ -683,8 +697,8 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 			$http.post("http://localhost:8080/db/test",data)
 				.then( function(response){ //success callback
 					console.log("DB request OK: " + JSON.stringify(response.data) );
-				}, function(){ //error callback
-					console.log("broken");
+				}, function(response){ //error callback
+					console.log("broken" + JSON.stringify(response.data) );
 				}
 			);
 		
@@ -714,6 +728,11 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 		
 	}
 	
+	
+	this.testFilter=function(a,b){
+		console.log("a: " + a + ", b: "+ b + ", angular.equals(a,b):" + angular.equals(a,b));
+		return angular.equals(a,b);
+	}
 	console.log("started controller caseList");
 }]);
 

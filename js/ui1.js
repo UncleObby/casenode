@@ -45,6 +45,14 @@ testData["feeEarners"]=[
 testData["caseFields"]=[
 	{
 		type: "client",
+		caseStatusColor: uiColor["green"],
+		caseDetails:{
+			title: "Application to set aside CCJ v HSBC",
+			caseFeeEstimate: 750,
+			caseBilled: 520,
+			caseWIPValue: 120,
+			caseExpecting: "waiting for o/s"
+		},
 		clients: [
 			{
 				"@rid":"#13:12",
@@ -53,13 +61,6 @@ testData["caseFields"]=[
 				title:"Mr"
 			}
 		],
-		name: "John Smith",
-		title: "Application to set aside CCJ v HSBC",
-		caseStatusColor: uiColor["green"],
-		caseFeeEstimate: 750,
-		caseBilled: 520,
-		caseWIPValue: 120,
-		caseExpecting: "waiting for o/s",
 		contacts: [
 			{	
 				party: "Client",
@@ -95,6 +96,16 @@ testData["caseFields"]=[
 	},
 	{
 		type: "client",
+		caseStatusColor: uiColor["red"],
+		caseDetails:{
+			name: "Rpoger Moore",
+			matterID: "MOO12-1",
+			title: "Claim against MI6",
+			caseFeeEstimate: 750,
+			caseBilled: 0,
+			caseWIPValue: 220,
+			caseExpecting: "HEARING 01 Jan 2016"
+		},
 		clients: [
 			{
 				"@rid": "#13:13",
@@ -102,14 +113,6 @@ testData["caseFields"]=[
 				lastname: "Moore"
 			}
 		],
-		name: "Rpoger Moore",
-		matterID: "MOO12-1",
-		title: "Claim against MI6",
-		caseStatusColor: uiColor["red"],
-		caseFeeEstimate: 750,
-		caseBilled: 0,
-		caseWIPValue: 220,
-		caseExpecting: "HEARING 01 Jan 2016",
 		contacts: [
 			{	
 				party: "Client",
@@ -144,18 +147,23 @@ testData["caseFields"]=[
 	},
 	{
 		type: "client",
-		name: "Charles Wesley",
-		clients: {
-			name: "Charles Wesley"
-		},
-		matterID: "WES5-1",
-		title: "Settlement Agreement",
 		caseStatusColor: uiColor["green"],
-		caseFeeEstimate: 500,
-		caseFeeType: "agreed fee",
-		caseBilled: 0,
-		caseWIPValue: 220,
-		caseExpecting: "Revised draft agreement from client",
+		caseDetails:{
+			matterID: "WES5-1",
+			title: "Settlement Agreement",
+			caseFeeEstimate: 500,
+			caseFeeType: "agreed fee",
+			caseBilled: 0,
+			caseWIPValue: 220,
+			caseExpecting: "Revised draft agreement from client"
+		},
+		clients: [
+			{
+				firstname: "Charles",
+				lastname: "Wesley",
+				title: "The Revd. Mr."
+			}
+		],
 		contacts: [
 			{
 				party: "Client",
@@ -187,14 +195,18 @@ testData["caseFields"]=[
 	},
 	{
 		type: "client",
-		name: "Michael Burke",
-		clients: {
-			name: "Michael Burke"
+		caseDetails: {
+			category: "Wills and Probate",
+			caseFeeEstimate: 350,
+			caseBilled: 0,
+			caseWIPValue: 100
 		},
-		category: "Wills and Probate",
-		caseFeeEstimate: 350,
-		caseBilled: 0,
-		caseWIPValue: 100,
+		clients: [
+			{
+				firstname: "Michael",
+				lastname: "Burke"
+			}
+		],
 		contacts: [
 			{	
 				party: "Client",
@@ -274,11 +286,15 @@ testData["caseFields"]=[
 	},
 	{
 		type: "enquiry",
-		name: "Stargazers Unlimited Limited",
-		clients: {
-			name: "targazers Unlimited Limited"
+		enquiryDetails: {
+			category: "Commercial"
 		},
-		category: "Commercial",
+		clients: [
+			{	
+				legalname: "Stargazers Unlimited Limited",
+				type: "legal"
+			}
+		],
 		contacts: [
 			{
 				party: "Client",
@@ -303,14 +319,18 @@ testData["caseFields"]=[
 	},
 	{
 		type: "enquiry",
-		name: "John Boon",
-		clients: {
-			name: "John Boon"
+		enquiryDetails: {
+			category: "Settlement Agreement",
+			timestamp: 1450458146,
+			caseFeeEstimate: 500,
+			caseFeeType: "agreed fee"
 		},
-		category: "Settlement Agreement",
-		timestamp: 1450458146,
-		caseFeeEstimate: 500,
-		caseFeeType: "agreed fee",
+		clients: [
+			{
+				firstname: "John",
+				lastname: "Boon"
+			}
+		],
 		contacts: [
 			{
 				party:"Client",
@@ -447,6 +467,12 @@ testData['documents'][14]={
 		}
 	}
 
+testData['caseDetails']	= [
+	{
+		
+	}
+]
+	
 //attach the documents to ecah case
 for (var i=0; i<15; i++){
 	(testData['caseFields'][0].documents || (testData['caseFields'][0].documents = []) ).push(testData['documents'][i]); //create array if required
@@ -540,10 +566,15 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	obs=$scope; 
 	//get some data........
 	this.list = JSON.parse(window.localStorage.getItem("caseFields")) || testData["caseFields"];
-	//create the "name" field from the clients names
+	//create the clientname field from the client(s) name(s)
 	for (var i=0; i<this.list.length; i++) {
 		for (var j=0; j<this.list[i].clients.length; j++) {
-			this.list[i].name = [this.list[i].clients[j].title, this.list[i].clients[j].firstname, this.list[i].clients[j].lastname].join(" ");
+			//if a legal person, use legal name, if natural, use title + firt + last
+			if (this.list[i].clients[j].type=="legal"){
+				this.list[i].clientname = this.list[i].clients[j].legalname;
+			} else {
+				this.list[i].clientname = [this.list[i].clients[j].title, this.list[i].clients[j].firstname, this.list[i].clients[j].lastname].join(" ");
+			}
 		}
 	};
 	this.templates = JSON.parse(window.localStorage.getItem("templates")) || testData["templates"];
@@ -632,22 +663,20 @@ uiApp.controller("caseList", ['$scope', '$http', function($scope, $http){
 	}
 	//database functions
 
-	//storeCase - adds or updates a case. 
-	//for now, we're being lazy and sending the whole case over. Later we'll revisit this and see if we can avoid sending more than required
-	function storeCase(caseObj, personObj){
+	//storeCase - adds or updates case details. 
+	this.storeCaseDetails = function(caseDetailsObj, personObj){
 		var data = {
-			person: {"@rid": personObj["@rid"]},
-			'case': caseObj
+			'caseDetails': caseDetailsObj
 		}
 		//send the case to the database router
 		$http.post("http://localhost:8080/db/storeCase",data)
 			.then( function(response){ //success callback
 				//store the recordID returned
-				caseObj['@rid']=response.data["@rid"];
+				caseDetailsObj['@rid']=response.data["@rid"];
 				console.log("DB request OK: " + JSON.stringify(response.data) );
 			}, function(response){
 				//error callback
-				console.log("broken");
+				console.log("broken: " + JSON.stringify(response.data));
 			});
 		console.log("storeCase: ");
 		
