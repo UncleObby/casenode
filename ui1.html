@@ -12,6 +12,7 @@
 	<script type='text/javascript' src='js/angular-sanitize.js'></script>
 	<script type='text/javascript' src="js/fuse.js"></script>
 	<script type='text/javascript' src='js/ui1.js'></script>
+	<script type='text/javascript' src='js/backend.js'></script>
 </HEAD>
 
 
@@ -87,7 +88,8 @@
 	</div>
 	<!-- main page section for interacting with cases -->	
 	<div ng-controller="caseList as caseList" class="row">
-		<input ng-model="myO.name"><button ng-click="savemyO()">SAVE</BUTTON>
+		<input ng-model="myO.name"><button ng-click="savemyO()">SAVE</button>
+		<button ng-click="caseList.notifyUser(myO.name)">Notify</button>
 		<!-- my cases status column -->
 		<div class="col-sm-2">
 			<!--nav tabs - cases, enquiries -->

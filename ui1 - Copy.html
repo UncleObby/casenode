@@ -87,7 +87,8 @@
 	</div>
 	<!-- main page section for interacting with cases -->	
 	<div ng-controller="caseList as caseList" class="row">
-		<input ng-model="myO.name"><button ng-click="savemyO()">SAVE</BUTTON>
+		<input ng-model="myO.name"><button ng-click="savemyO()">SAVE</button>
+		<button ng-click="caseList.notifyUser(myO.name)">Notify</button>
 		<!-- my cases status column -->
 		<div class="col-sm-2">
 			<!--nav tabs - cases, enquiries -->
@@ -100,9 +101,9 @@
 				<div class="panel-group">
 					<div ng-repeat="case in caseList.list | filter:{type:'client'}" ><!-- only show clients in this list-->
 						<div ng-click="caseList.choose(case)" class="case-list-item panel panel-default" ng-class="{'active': caseList.currCaseN == $index}" ng-style="{'background-color' : case.caseStatusColor}" >
-							<span title="{{case.name}}"> {{case.name}}<br /></span>
-							<span title="{{case.title}}"> {{case.title}}<br /></span>
-							<span title="{{case.caseExpecting}}"> {{case.caseExpecting}}</span>
+							<span title="{{case.name}}"> {{case.clientname}} {{case.clientname}}<br /></span>
+							<span title="{{case.title}}"> {{case.caseDetails.title}}<br /></span>
+							<span title="{{case.caseExpecting}}"> {{case.caseDetails.caseExpecting}}</span>
 						</div>
 					</div>
 				</div>
@@ -111,9 +112,9 @@
 				<div class="panel-group">
 					<div ng-repeat="case in caseList.list | filter:{type:'enquiry'}" >
 						<div ng-click="caseList.choose(case)" class="case-list-item panel panel-default" ng-class="{'active': caseList.currCaseN == $index}" ng-style="{'background-color' : case.caseStatusColor}" >
-							<span title="{{case.name}}"> {{case.name}}<br /></span>
-							<span title="{{case.category}}"> {{case.category}}<br /></span>
-							<span title="{{case.dateOfEnq}}"> {{case.dateOfEnq}}</span>
+							<span title="{{case.name}}"> {{case.clientname}}<br /></span>
+							<span title="{{case.category}}"> {{case.enquiryDetails.category}}<br /></span>
+							<span title="{{case.dateOfEnq}}"> {{case.enquiryDetails.dateOfEnq}}</span>
 						</div>
 					</div>
 				</div>
@@ -137,9 +138,9 @@
 			<div ng-show="caseList.activeTab['middle'] == 'File'" class="panel-group">
 			<span>Current {{caseList.current.type}} file</span>
 				<div class="case-list-item panel panel-default" ng-style="{'background-color' : caseList.current.caseStatusColor}">
-					<span title="{{caseList.current.name}}">{{caseList.current.name}}</span><br />
-					<span title="{{caseList.current.title}}">{{caseList.current.title}}</span><br />
-					<span title="{{caseList.current.caseExpecting}}">{{caseList.current.caseExpecting}}</span>
+					<span title="{{caseList.current.name}}">{{caseList.current.clientname}}</span><br />
+					<span title="{{caseList.current.title}}">{{caseList.current.caseDetails.title}}</span><br />
+					<span title="{{caseList.current.caseExpecting}}">{{caseList.current.caseDetails.caseExpecting}}</span>
 				</div>
 				<div ng-repeat="doc in caseList.current.documents"> 
 					<div class="panel panel-default doc-list-item" ng-class-even="'even-row'" ng-class-odd="'odd-row'"

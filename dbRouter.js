@@ -88,7 +88,7 @@ router.post("/updatePerson", function(req,res){
 	}
 });
 
-//addCase
+//storeCase
 router.post("/storeCase", function(req,res){
 	//validate input
 	/* expects:
@@ -134,7 +134,61 @@ router.post("/storeCase", function(req,res){
 );
 
 
-//updateCase
+//storeDocument
+router.post("/storeDocument", function(req,res){
+	//validate input
+	/* expects:
+	body: {
+		docObj:{@rid: person.@rid}
+		linksObj:{
+			filedIn: caseObj,
+			author: personObj
+		}
+	}
+	*/
+	var db=DBConn();
+	//add or update?
+	//if we've got an ID, then update existing, else add new
+	if (req.body.docObj['@rid']){
+		//transfer @rid from input to where var
+		var sRID=req.body.docObj['@rid'];
+		delete req.body.docObj['@rid'];
+		db.update('doc').set(req.body.docObj)
+			.where({'@rid':sRID})
+			.one()
+			.then( function (result){ //ok
+				//return the number of updates, i.e. '1'
+				res.status(200).end(JSON.stringify(result))
+			}, function(err){//err
+				res.status(500).end("didn't work" + JSON.stringify(err));			
+			}
+		);
+		db.close();
+	} else { // no @rid so add a new record
+		db.create('VERTEX', 'doc').set(req.body.docObj).one()
+			.then( function(result){ //ok
+				//If we've got a link to a case, add that now. 
+				if( (typeof req.body.caseObj != 'undefined') && req.body.caseObj['@rid']){
+					db.create('EGDE','filedIn')
+					.from(result('@rid'))/*the newly inserted doc*/
+					.to(req.body.caseObj['@rid'])/*the specified case*/
+					.one()
+					.then( function(result){//ok
+						res.end(JSON.stringify(result))
+					}, function (err){//not ok
+						
+					})
+				}
+				res.status(201).end(JSON.stringify(result))
+			}, function(err){ //err
+				res.status(500).end("didn't work" + JSON.stringify(err));
+			}
+		);
+		db.close();
+	}
+
+});
+
 
 
 //testing function

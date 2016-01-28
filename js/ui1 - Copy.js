@@ -419,12 +419,12 @@ testData['documents'][0]=	{
 		doctype: '.msg',
 		title: "Email to other side re consent",
 		filepath: "",
-		date: "2015-08-04"
+		date: "04/08/2015"
 	}
 testData['documents'][1]=	{
 		title: "Draft Consent Order",
 		filepath: "",
-		date: "2015-08-05"
+		date: "04/08/2015"
 	}
 testData['documents'][2]=	{
 		title: "Letter to o-s serving N244",
@@ -614,8 +614,7 @@ uiApp.controller("feeEarners", ['$scope', function($scope) {
 }]);
 
 //create main case list controller
-//NB backend is in backend.js which must be loaded after this file
-uiApp.controller("caseList", ['$scope', '$http', 'notifyUser','backend', function($scope, $http, notifyUser, backend){
+uiApp.controller("caseList", ['$scope', '$http', 'notifyUser', function($scope, $http, notifyUser){
 	//assign developer's personal object to this
 	ob=this; //refers to this controller $scope.caseList
 	obs=$scope; 
@@ -741,13 +740,8 @@ uiApp.controller("caseList", ['$scope', '$http', 'notifyUser','backend', functio
 		console.log("storeCase: ");
 		
 	}
-	
-	//store a document using he backend module.provider
-	this.storeDocument= function(docObj, linksObj){
-		backend.storeDocument(docObj, linksObj);
-	}
 
-	//storePerson - async adds a person the the database. Second argument is to force the addition of a person with an identical name
+	//DBaddPerson - async adds a person the the database. Second argument is to force the addition of a person with an identical name
 	this.storePerson = function(personObj, bForceInsertIdentical){
 		var data={person: personObj};
 		//if the person had a record ID, then update, else add
@@ -773,14 +767,19 @@ uiApp.controller("caseList", ['$scope', '$http', 'notifyUser','backend', functio
 		}
 		console.log("storePerson: ");
 	}
-	
-	
+
 	////////////////////////////////
 	// testing functions
 	//	
 	this.dbtest=function(data){
-		backend.log();
-		return "returned: " + backend.test(data);
+			$http.post("http://localhost:8080/db/test",data)
+				.then( function(response){ //success callback
+					console.log("DB request OK: " + JSON.stringify(response.data) );
+				}, function(response){ //error callback
+					console.log("broken" + JSON.stringify(response.data) );
+				}
+			);
+		
 	}
 	
 	//fetch case

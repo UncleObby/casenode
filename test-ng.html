@@ -1,14 +1,19 @@
 <!doctype html>
 <meta charset="UTF-8">
-<script type='text/javascript' src='js/angular.js'></script>
+	<script type='text/javascript' src='js/jquery.js'></script>
+	<script type='text/javascript' src="js/jquery-ui.js"></script>
+	<script type='text/javascript' src='js/angular.js'></script>
+	<script type='text/javascript' src='js/angular-sanitize.js'></script>
 <link rel='stylesheet' type='text/css' href='css/xeditable.css'>
 <script type='text/javascript'>
+//developer's personal object
+var ob={};
 
 //instantiate angular.js
-//with xeditable module
-
 var app = angular.module("cn", []) ;
-
+</script>
+<script src="test-separate-file.js" type="text/javascript">/*load up the seperate file*/</script>
+<script>
 //define user service
 app.factory("current", function(){
 	return {
@@ -17,32 +22,32 @@ app.factory("current", function(){
 	};
 });//"current" service
 
-
-
 //create the enquiryForm controller
-app.controller("enquiryForm", enquiryForm); 
-function enquiryForm($scope){
-
- $scope.contactDetails = [
+app.controller("enquiryForm", ['$scope', 'notifyUser', 'current', enquiryForm]); 
+//notifyUser is defined in the file test-separate-file.js, which must be loaded AFTER app is defined.
+function enquiryForm($scope, notifyUser, current){
+	ob=this;
+	this.contactDetails = 
 	{
-	firstName:"",
-	lastName:"",
-	phone_mobile:"",
-	notes:""
-	}
-	];
+		firstName:"",
+		lastName:"",
+		phone_mobile:"",
+		notes:""
+	};
 
 	
- $scope.save = function(){
-	var sMsg = "Saving contact: " + $scope.contactDetails["firstName"] + " " + $scope.contactDetails["lastName"];
+	this.save = function(){
+	var sMsg = "Saving contact: " + this.contactDetails["firstName"] + " " + this.contactDetails["lastName"];
 	sMsg += "\rUser: " + current.username;
 	console.log("saving..." + sMsg);
 		
 	}
 
-
+	this.notifyUser=function(sMsg){
+		//invoke the app.factory function notifyUser (defined in test-separate-file.js)
+		notifyUser(sMsg || "You have been notified");
+	}
 };//enquiryForm
-
 
 </script>
 
@@ -73,6 +78,13 @@ Logged on as: {{cn.current.username}}
 	</TABLE>
 
 	<div ng-bind-html="enquiry.notes" placeholder="Notes...">sadsad</div>
-	<button ng-click="console.log('enquiry.save()');">SAVE</button>
+	<button ng-click="enquiry.save()">SAVE</button>
+	<button ng-click="enquiry.notifyUser()">notify</button>
 </div>
-<button onclick="console.log('test button clicked');">test</button>
+<button onclick="aha();">test</button>
+
+</body>
+<script>
+aha();
+</script>
+</HTML>
