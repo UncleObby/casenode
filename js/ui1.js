@@ -325,12 +325,10 @@ testData["caseFields"]=[
 			},
 			{
 				title: "Note of enquiry",
-				doctype: "attendancenote",
+				doctype: ".html",
 				date: "23/07/2015",
 				filepath: "",
-				content: {
-					HTML: "<H2>Note of enquiry</h2><p>test</p>"
-				}
+				content: "<H2>Note of enquiry</h2><p>test</p>"
 			}
 		]
 	},
@@ -721,25 +719,15 @@ uiApp.controller("caseList", ['$scope', '$http', 'notifyUser','backend', functio
 		//open a new window to show the document
 		window.open(doc.targetURL,"PreviewWindow");
 	}
+	
+	
+	//////////////////////////
 	//database functions
-
-	//storeCase - adds or updates case details. 
-	this.storeCaseDetails = function(caseDetailsObj, personObj){
-		var data = {
-			'caseDetails': caseDetailsObj
-		}
-		//send the case to the database router
-		$http.post("http://localhost:8080/db/storeCase",data)
-			.then( function(response){ //success callback
-				//store the recordID returned
-				caseDetailsObj['@rid']=response.data["@rid"];
-				console.log("DB request OK: " + JSON.stringify(response.data) );
-			}, function(response){
-				//error callback
-				console.log("broken: " + JSON.stringify(response.data));
-			});
-		console.log("storeCase: ");
-		
+	// - these generally just invoke the backend storage function of the same name
+	
+	//storeMatter - adds or updates case details. Optional personObj includes a client
+	this.storeMatter = function(caseDetailsObj, personObj){
+		backend.storeMatter(caseDetailsObj,personObj);
 	}
 	
 	//store a document using he backend module.provider
@@ -749,32 +737,14 @@ uiApp.controller("caseList", ['$scope', '$http', 'notifyUser','backend', functio
 
 	//storePerson - async adds a person the the database. Second argument is to force the addition of a person with an identical name
 	this.storePerson = function(personObj, bForceInsertIdentical){
-		var data={person: personObj};
-		//if the person had a record ID, then update, else add
-		if (personObj['@rid'] &&(!(bForceInsertIdentical===true))) {
-			data['@rid']=personObj['@rid'];
-			$http.post("http://localhost:8080/db/updatePerson",data)
-				.then( function(response){ //success callback
-					console.log("DB request OK: " + JSON.stringify(response.data) );
-				}, function(response){ //error callback
-					console.log("broken" + JSON.stringify(response.data) );
-				}
-			);
-		} else { //no record ID, so add
-			$http.post("http://localhost:8080/db/addPerson",data)
-				.then( function(response){ //success callback
-					//store the recordID
-					personObj['@rid']=response.data["@rid"];
-					console.log("DB request OK: " + JSON.stringify(response.data) );
-				}, function(response){ //error callback
-					console.log("broken" + JSON.stringify(response.data) );
-				}
-			);
-		}
-		console.log("storePerson: ");
+		backend.storePerson(personObj,bForceInsertIdentical);
 	}
 	
-	
+	//fetchMatters - fetches the matters int he first place
+	this.fetchMatters = function(obj){
+		backend.fetchMatters(obj);
+	}
+
 	////////////////////////////////
 	// testing functions
 	//	
@@ -824,8 +794,19 @@ uiApp.factory('notifyUser',['$window', function(appWindow){
 
 
 
+/////////////////////
+// script wide utility functions
+//
+function parseDateToUnix(s){
+	//regular expression for parsing UK format dates
+	var reD = /^(\d\d?)[\/\.\-](\d\d?)[\/\.\-](\d\d|\d\d\d\d)\b/
+	var m=s.match(reD);//if matched, m[0]==s, m[1]==day, m[2]==month, m[3]==yyyy
+}
 
-
-
-
+//populateNameFromNames
+//tries to populate firstname, lastname, title, legal from name
+function populateNamesFromName(p){
+	var reJohnSmith = /^([a-z]+) ([a-z]+) ?$/i
+	var reMrJohnSmith = /(Mr|Mrs|Miss|Ms|Dr|Fr|Sir) ([a-z]+) ([a-z]+)/i
+}
 

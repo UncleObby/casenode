@@ -88,8 +88,8 @@ router.post("/updatePerson", function(req,res){
 	}
 });
 
-//storeCase
-router.post("/storeCase", function(req,res){
+//storeMatter
+router.post("/storeMatter", function(req,res){
 	//validate input
 	/* expects:
 	body: {
@@ -104,7 +104,7 @@ router.post("/storeCase", function(req,res){
 		//transfer @rid from input to where var
 		var sRID=req.body.caseDetails['@rid'];
 		delete req.body.caseDetails['@rid'];
-		db.update('case').set(req.body.caseDetails)
+		db.update('matter').set(req.body.caseDetails)
 			.where({'@rid':sRID}).one()
 			.then( function (result){ //ok
 				//return the number of updates, i.e. '1'
@@ -115,7 +115,7 @@ router.post("/storeCase", function(req,res){
 		);
 		db.close();
 	} else { // no @rid so add a new record
-		db.create('VERTEX', 'case').set(req.body.caseDetails).one()
+		db.create('VERTEX', 'matter').set(req.body.caseDetails).one()
 			.then( function(result){ //ok
 				res.status(201).end(JSON.stringify(result))
 			}, function(err){ //err
@@ -124,15 +124,8 @@ router.post("/storeCase", function(req,res){
 		);
 		db.close();
 	}
-	
-	//connect to the database
-	
-	//add the case and the edge to the client as a transcation
-	
-	//db.insert('case').set()
 }
 );
-
 
 //storeDocument
 router.post("/storeDocument", function(req,res){
@@ -168,6 +161,7 @@ router.post("/storeDocument", function(req,res){
 		db.create('VERTEX', 'doc').set(req.body.docObj).one()
 			.then( function(result){ //ok
 				//If we've got a link to a case, add that now. 
+				console.log("typeof caseObj is " + typeof casObj);
 				if( (typeof req.body.caseObj != 'undefined') && req.body.caseObj['@rid']){
 					db.create('EGDE','filedIn')
 					.from(result('@rid'))/*the newly inserted doc*/
@@ -189,6 +183,48 @@ router.post("/storeDocument", function(req,res){
 
 });
 
+//storeEnquiry
+router.post("storeEnquiry", function(req,res){
+	//validate input
+	
+});
+
+//fetchMatters
+router.post("/fetchMattersByResponsible", function(req,res){
+	//validate input
+	/* expects a userID of the responsible person
+	responsible:
+	*/
+	var db=DBConn();
+	db.select().from('matter').all()
+		.then( function(result){//ok
+			res.status(200).end(JSON.stringify(result));
+		}, function(err){//not ok
+			res.status(500).end("error: " + JSON.stringify(err));
+		});
+	db.close();
+	
+});
+
+
+//fetchPersonsByID
+router.post("/fetchPersonsByID", function(req,res){
+	//validate input
+	/* expects a comma separated string of recordIDs
+	RIDs:"#13:12,#13:14"
+	*/
+	//format the list of IDs into a single array-like string for OrientDB, e.g. ['#13:1', '#13:2'] => "[#13:1,#13:2]"
+	sRIDs = "[" + req.body.RIDs + "]"
+	var db=DBConn();
+	db.select().from(sRIDs).all()
+		.then( function(result){//ok
+			res.status(200).end(JSON.stringify(result));
+		}, function(err){//not ok
+			res.status(500).end("error: " + JSON.stringify(err));
+		});
+	db.close();
+	
+});
 
 
 //testing function

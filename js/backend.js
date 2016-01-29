@@ -9,6 +9,7 @@ revision:
 v0.1 - 2016/01/28 - incept, code split off from ui1.js
 */
 
+
 uiApp.provider("backend",function(){
 	//set the service URL (can be changed from module config)
 	this.serviceURL="http://localhost:8080";
@@ -29,6 +30,31 @@ uiApp.provider("backend",function(){
 					}
 				);
 			},
+			storePerson: function(personObj, bForceInsertIdentical){
+				var data={person: personObj};
+				//if the person had a record ID, then update, else add
+				if (personObj['@rid'] &&(!(bForceInsertIdentical===true))) {
+					data['@rid']=personObj['@rid'];
+					$http.post("http://localhost:8080/db/updatePerson",data)
+						.then( function(response){ //success callback
+							console.log("DB request OK: " + JSON.stringify(response.data) );
+						}, function(response){ //error callback
+							console.log("broken" + JSON.stringify(response.data) );
+						}
+					);
+				} else { //no record ID, so add
+					$http.post("http://localhost:8080/db/addPerson",data)
+						.then( function(response){ //success callback
+							//store the recordID
+							personObj['@rid']=response.data["@rid"];
+							console.log("DB request OK: " + JSON.stringify(response.data) );
+						}, function(response){ //error callback
+							console.log("broken" + JSON.stringify(response.data) );
+						}
+					);
+				}
+				console.log("storePerson: ");
+			},
 			
 			//function to store a document
 			//pass the document object to store, plus any objects you want it to be linked to
@@ -45,7 +71,113 @@ uiApp.provider("backend",function(){
 					//error callback
 					console.log("broken: " + JSON.stringify(response.data));
 				});
+			},
+			//storeMatter
+			storeMatter: function(caseDetailsObj, personObj){
+				var data = {
+					'caseDetails': caseDetailsObj
+				}
+				//send the case to the database service
+				$http.post("http://localhost:8080/db/storeMatter",data)
+					.then( function(response){ //success callback
+						//store the recordID returned
+						caseDetailsObj['@rid']=response.data["@rid"];
+						console.log("DB request OK: " + JSON.stringify(response.data) );
+					}, function(response){
+						//error callback
+						console.log("broken: " + JSON.stringify(response.data));
+					});
+				console.log("storeMatter: ");
+			},
+			
+			//function to store a new enquiry
+			storeEnquiry: function(enqObj){
+				//set up structure required at other end.
+				var data={
+					enqObj: enqObj
+				}
+				//send it
+				$http.post("http://localhost:8080/db/storeMatter",data)
+					.then( function(response){ //success callback
+						//store the recordID returned
+						enqObj['@rid']=response.data["@rid"];
+						console.log("DB request OK: " + JSON.stringify(response.data) );
+					}, function(response){
+						//error callback
+						console.log("broken: " + JSON.stringify(response.data));
+					});
+				console.log("storeEnquiry: ");	
+			},
+			
+			//get matters
+			fetchMatters: function(obj){
+				//set up data structure
+				// ** at the moment, it's ignored
+				var data = {name:"Bob"};
+				//send it
+				$http.post("http://localhost:8080/db/fetchMattersByResponsible", data)
+					.then( function(response){ //success callback
+						//stuff the JSON into the object
+						obj=response.data;
+						console.log("DB request OK: " + JSON.stringify(obj) );
+					}, function(response){
+						//error callback
+						console.log("broken: " + JSON.stringify(response.data));
+					});
+				console.log("fetchMatters: ");	
 			}
 		}
 	}
 });
+
+
+
+/*
+What do we want to do?
+
+User interface:
+*Save an enquiry, automatically or finally
+
+Store person (get personID OR existing)
+Store caseDetails
+Store attendance note
+link attendance note to case
+link person to case as client
+
+
+*take instructions on a case
+update caseDetails to be a client matter
+store instructions document
+link document to case
+
+*edit a person record
+
+store updated details
+
+
+*Edit and save the details of a case
+
+
+*Drag a document onto a case
+add the document
+link it to the case
+
+
+*Create an info linked to source document. 
+
+*get a set of caseFields
+select from case where this fee earner
+select from document where isFiledIn  any of these cases
+select from person where isClient in any of these cases
+
+case.documents.push(each document)
+
+
+*/
+
+
+
+
+
+
+
