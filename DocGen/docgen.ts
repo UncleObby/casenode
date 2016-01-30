@@ -35,7 +35,7 @@ export function docgen(args: DocGenParams) {
             var sDoc = data.toString("UTF-8");
             //for each tag in the FormData, look for that tag inside {{}} and replace with the form data
             for (var fieldName in args.FormData) {
-                console.log("FOUND {{" + fieldName + "}} at " sDoc.indexOf('{{' + fieldName + '}}').toString() + " replacing with : " + args.FormData[fieldName]);
+                console.log("FOUND {{" + fieldName + "}} at " + sDoc.indexOf('{{' + fieldName + '}}').toString() + " replacing with : " + args.FormData[fieldName]);
                 //find the tag and replace it
                 sDoc = sDoc.replace('{{' + fieldName + '}}', args.FormData[fieldName]);
 
