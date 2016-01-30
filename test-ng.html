@@ -1,0 +1,90 @@
+<!doctype html>
+<meta charset="UTF-8">
+	<script type='text/javascript' src='js/jquery.js'></script>
+	<script type='text/javascript' src="js/jquery-ui.js"></script>
+	<script type='text/javascript' src='js/angular.js'></script>
+	<script type='text/javascript' src='js/angular-sanitize.js'></script>
+<link rel='stylesheet' type='text/css' href='css/xeditable.css'>
+<script type='text/javascript'>
+//developer's personal object
+var ob={};
+
+//instantiate angular.js
+var app = angular.module("cn", []) ;
+</script>
+<script src="test-separate-file.js" type="text/javascript">/*load up the seperate file*/</script>
+<script>
+//define user service
+app.factory("current", function(){
+	return {
+		username:"OJL",
+		ID:"1"
+	};
+});//"current" service
+
+//create the enquiryForm controller
+app.controller("enquiryForm", ['$scope', 'notifyUser', 'current', enquiryForm]); 
+//notifyUser is defined in the file test-separate-file.js, which must be loaded AFTER app is defined.
+function enquiryForm($scope, notifyUser, current){
+	ob=this;
+	this.contactDetails = 
+	{
+		firstName:"",
+		lastName:"",
+		phone_mobile:"",
+		notes:""
+	};
+
+	
+	this.save = function(){
+	var sMsg = "Saving contact: " + this.contactDetails["firstName"] + " " + this.contactDetails["lastName"];
+	sMsg += "\rUser: " + current.username;
+	console.log("saving..." + sMsg);
+		
+	}
+
+	this.notifyUser=function(sMsg){
+		//invoke the app.factory function notifyUser (defined in test-separate-file.js)
+		notifyUser(sMsg || "You have been notified");
+	}
+};//enquiryForm
+
+</script>
+
+
+<HTML ng-app="cn" >
+<body>
+<input ng-model="userHTML" aria-label="User Input">
+<div ng-bind-html="userHTML"></div>
+
+<input type="text" ng-model="myInput" placeholder="Enter name here">
+<h1><span ng-show="myInput">Hello </span>{{myInput}}</h1>
+
+<hr>
+Logged on as: {{cn.current.username}}
+<div ng-controller="enquiryForm as enquiry">
+	<TABLE>
+	<TR>
+	<TD>
+
+	First name: <input ng-model="enquiry.contactDetails.firstName" placeholder="Enter first name"><br>
+	Last name: <input ng-model="enquiry.contactDetails.lastName" placeholder="Enter last name"></br>
+
+	</TD>
+	<TD>
+	Name: {{enquiry.contactDetails.firstName}} {{enquiry.contactDetails.lastName}}</span>
+	</TD>
+	</TR>
+	</TABLE>
+
+	<div ng-bind-html="enquiry.notes" placeholder="Notes...">sadsad</div>
+	<button ng-click="enquiry.save()">SAVE</button>
+	<button ng-click="enquiry.notifyUser()">notify</button>
+</div>
+<button onclick="aha();">test</button>
+
+</body>
+<script>
+aha();
+</script>
+</HTML>

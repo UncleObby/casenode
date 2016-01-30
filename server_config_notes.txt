@@ -1,0 +1,9 @@
+SERVER CONFIG NOTES
+
+firewall
+allow VPN connections to ports:
+80 (http default)
+8080 (node back end http service)
+2424 (orientdb binary port)
+2480 (orientdb http port)
+

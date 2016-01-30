@@ -1,0 +1,36 @@
+<!doctype html>
+<HTML ng-app="testSelect" ><!--assign angular module by name (1st arg to angular.module)-->
+<meta charset="UTF-8">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script type="text/javascript">
+/* 
+an example showing how useful angular.js is
+for Ian, love from Oliver Xmas 2015;-)
+*/
+// some data at top scope
+var testData=[
+	{
+		name: "Ian",
+		incept: "28 Aug 1970"
+	},
+	{
+		name: "Oliver",
+		incept: "23 July 1970"
+	}
+];
+//create Angular module (module() and controller() return ref to module for chaining)
+var myApp = angular.module("testSelect", [])
+ .controller("mySelect", ['$scope',function($scope){
+	$scope.list=testData; //use the testData for our list
+	$scope.doSomethingWith=function(arg){console.log(arg)}; // to be called from a click event
+ }]);
+</script>
+<body>
+	<h3>Choose programmer</h3>
+	<div ng-controller="mySelect"><!-- assign controller using it's name (1st arg to module.controller)-->
+		<!-- <select> element with <options> from the list in our controller. 'selected' property will get defined by angular-->
+		<select ng-model="selected" ng-options="opt.name for opt in list"></select>
+		<span ng-show="selected" ng-click="doSomethingWith(selected)">Incept: {{selected.incept}}</span>
+	</div>
+</body>
+</html>
